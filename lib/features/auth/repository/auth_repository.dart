@@ -1,18 +1,25 @@
 import 'dart:developer';
 
+import 'package:campus_mart/core/utils/providers.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' hide User;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../models/user.dart';
 
+final authRepoProvider = Provider((ref){
+  return AuthRepository(firebaseAuth: ref.watch(firebaseAuthProvider));
+});
 FirebaseFirestore _fire = FirebaseFirestore.instance;
 
 class AuthRepository {
+  final FirebaseAuth firebaseAuth;
+  AuthRepository({required this.firebaseAuth});
   //create
   Future<UserCredential?> createUser(
       String username, String email, String regNo, String password) async {
     final credentials =
-        await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        await firebaseAuth.createUserWithEmailAndPassword(
       email: email,
       password: password,
     );
@@ -34,7 +41,7 @@ class AuthRepository {
   //login
   Future<User?> login(String email, String password) async {
     try {
-      final creds = await FirebaseAuth.instance.signInWithEmailAndPassword(
+      final creds = await firebaseAuth.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
@@ -45,6 +52,6 @@ class AuthRepository {
     }
   }
   Future<void> logout()async{
-    await FirebaseAuth.instance.signOut();
+    await firebaseAuth.signOut();
   }
 }
