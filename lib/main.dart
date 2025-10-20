@@ -1,3 +1,4 @@
+import 'package:campus_mart/core/utils/loading_screen.dart';
 import 'package:campus_mart/features/auth/controller/auth_controller.dart';
 import 'package:campus_mart/features/auth/view/authscreen.dart';
 import 'package:campus_mart/features/bottomNavBar/home/homeview.dart';
@@ -29,7 +30,10 @@ class MainApp extends ConsumerWidget{
     return MaterialApp(
       home: currentUser.when(
         data: (user) => BottomBarC(), 
-        error: (_, __) => AuthScreen() , 
+        error: (_, __) => LoadingScreen(
+          message: 'Checking authentication...',
+          subtitle: 'Please wait',
+        ) , 
         loading: ()=> SpinKitSpinningLines(color: Colors.black),
         ),
       theme: ThemeData(
