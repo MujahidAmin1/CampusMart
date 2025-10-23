@@ -116,7 +116,7 @@ class ListingsScreen extends ConsumerWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(50),
         ),
-        onPressed: () => context.push(CreateProduct()),
+        onPressed: () => context.push(Placeholder()),
         child: Icon(Iconsax.additem),
       ),
     );

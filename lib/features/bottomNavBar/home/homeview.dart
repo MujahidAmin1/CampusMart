@@ -14,9 +14,9 @@ class BottomBarC extends ConsumerWidget {
     var currentScreen = ref.watch(currentScreenProvider);
     List<Widget> screens = [
   ListingsScreen(),
-  BookMarkScreen(),
-  OrderScreen(),
-  ProfileScreen(),
+  // BookMarkScreen(),
+  // OrderScreen(),
+  // ProfileScreen(),
 ];
    return Scaffold(
     body: IndexedStack(
@@ -51,7 +51,7 @@ class BottomBarC extends ConsumerWidget {
           ),
         ],
     ),
-   )
+   );
   }
 }
 

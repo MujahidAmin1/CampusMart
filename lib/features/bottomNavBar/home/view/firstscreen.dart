@@ -1,5 +1,9 @@
+import 'package:campus_mart/core/utils/ktextstyle.dart';
+import 'package:campus_mart/features/bottomNavBar/listings/widget/category_chips.dart';
 import 'package:campus_mart/models/product.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:iconsax_flutter/iconsax_flutter.dart';
 class Firstscreen extends StatefulWidget {
   const Firstscreen({super.key});
 
@@ -11,7 +15,6 @@ class _FirstscreenState extends State<Firstscreen> {
   Category selectedCategory = Category.all;
   int _selectedIndex = 0;
 
-  DatabaseService databaseService = DatabaseService();
   
 
   @override

@@ -7,16 +7,17 @@ environment:
   sdk: '>=3.6.0 <4.0.0'
 
 dependencies:
-  flutter:
-    sdk: flutter
-  flutter_riverpod: ^2.6.1
   another_flushbar: ^1.12.30
+  appwrite: ^20.2.1
   cloud_firestore: ^5.6.7
   cupertino_icons: ^1.0.8
   dotted_border: ^2.1.0
   firebase_auth: ^5.5.3
   firebase_core: ^3.13.0
   firebase_storage: ^12.4.5
+  flutter:
+    sdk: flutter
+  flutter_riverpod: ^2.6.1
   flutter_spinkit: ^5.2.1
   google_sign_in: ^6.3.0
   iconsax_flutter: ^1.0.0
