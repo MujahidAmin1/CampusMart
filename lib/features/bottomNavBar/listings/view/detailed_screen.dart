@@ -87,8 +87,6 @@ class _ProductDetailedScreenState extends State<ProductDetailedScreen> {
                       '₦${widget.product.price.toStringAsFixed(2)}',
                       style: kTextStyle(isBold: true, size: 22),
                     ),
-                    Text("items in stock: ${widget.product.quantity}",
-                        style: kTextStyle(color: Colors.green)),
                   ],
                 ),
               ),

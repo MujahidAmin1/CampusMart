@@ -1,6 +1,7 @@
 import 'package:campus_mart/core/utils/extensions.dart';
 import 'package:campus_mart/core/utils/ktextstyle.dart';
 import 'package:campus_mart/features/bottomNavBar/listings/controller/listing_contr.dart';
+import 'package:campus_mart/features/bottomNavBar/listings/view/create_prod_screen.dart';
 import 'package:campus_mart/features/bottomNavBar/listings/view/detailed_screen.dart';
 import 'package:campus_mart/features/bottomNavBar/listings/widget/category_chips.dart';
 import 'package:campus_mart/features/bottomNavBar/listings/widget/product_display.dart';
@@ -116,7 +117,7 @@ class ListingsScreen extends ConsumerWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(50),
         ),
-        onPressed: () => context.push(Placeholder()),
+        onPressed: () => context.push(CreateProdScreen()),
         child: Icon(Iconsax.additem),
       ),
     );

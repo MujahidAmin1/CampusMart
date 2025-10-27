@@ -13,7 +13,7 @@ Future<File?> pickImage() async {
   }
 }
 
-Future<List<File>?> pickImages() async {
+Future<List<File>?> pickImages(camera) async {
   ImagePicker imagePicker = ImagePicker();
   try {
     final xFiles = await imagePicker.pickMultiImage();

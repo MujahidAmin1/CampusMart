@@ -21,7 +21,6 @@ class Product {
   final bool isAvailable;
   final DateTime datePosted;
   final List<String> imageUrls;
-  final int quantity;
 
   Product({
     required this.productId,
@@ -33,7 +32,6 @@ class Product {
     required this.isAvailable,
     required this.datePosted,
     required this.imageUrls,
-    required this.quantity,
   });
 
   Product copyWith({
@@ -46,7 +44,6 @@ class Product {
     bool? isAvailable,
     DateTime? datePosted,
     List<String>? imageUrls,
-    int? quantity, 
   }) {
     return Product(
       productId: productId ?? this.productId,
@@ -58,7 +55,6 @@ class Product {
       isAvailable: isAvailable ?? this.isAvailable,
       datePosted: datePosted ?? this.datePosted,
       imageUrls: imageUrls ?? this.imageUrls,
-      quantity: quantity ?? this.quantity, 
     );
   }
 
@@ -73,7 +69,6 @@ class Product {
       isAvailable: map['isAvailable'],
       datePosted: (map['datePosted'] as Timestamp).toDate(),
       imageUrls: List<String>.from(map['imageUrls']),
-      quantity: map['quantity'] ?? 1,
     );
   }
 
@@ -88,7 +83,6 @@ class Product {
       'isAvailable': isAvailable,
       'datePosted': datePosted,
       'imageUrls': imageUrls,
-      'quantity': quantity, // 
     };
   }
 }
