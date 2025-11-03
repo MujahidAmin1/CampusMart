@@ -1,30 +1,30 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class CartItem {
+class Wishlist {
   String productTitle;
   String productId;
   String userId;
   int quantity;
-  String cartItemId;
+  String wishlistId;
   String sellerId;
   DateTime addedAt;
   double price;
-  CartItem({
+  Wishlist({
     required this.productTitle,
     required this.userId,
     required this.productId,
     required this.sellerId,
-    required this.cartItemId,
+    required this.wishlistId,
     required this.quantity,
     required this.price,
     required this.addedAt,
   });
-  factory CartItem.fromMap(Map<String, dynamic> map) {
-    return CartItem(
+  factory Wishlist.fromMap(Map<String, dynamic> map) {
+    return Wishlist(
       productTitle: map['productTitle'] ?? '',
       userId: map['userId'] ?? '',
       productId: map['productId'] ?? '',
-      cartItemId: map['cartItemId'] ?? '',
+      wishlistId: map['wishlistId'] ?? '',
       quantity: map['quantity'] ?? 1,
       sellerId: map['sellerId'] ?? '',
       price: map['price'] ?? 0,
@@ -37,7 +37,7 @@ class CartItem {
       'userId': userId,
       'productId': productId,
       'price': price,
-      'cartItemId': cartItemId,
+      'wishlistId': wishlistId,
       'quantity': quantity,
       'sellerId': sellerId,
       'addedAt': Timestamp.fromDate(addedAt),

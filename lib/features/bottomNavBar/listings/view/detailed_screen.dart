@@ -14,7 +14,6 @@ class ProductDetailedScreen extends StatefulWidget {
 
 class _ProductDetailedScreenState extends State<ProductDetailedScreen> {
   @override
- 
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
@@ -82,11 +81,25 @@ class _ProductDetailedScreenState extends State<ProductDetailedScreen> {
                     widget.looped
                         ? SizedBox()
                         : // item detail,
-                    SizedBox(height: 5),
+                        SizedBox(height: 5),
                     Text(
                       '₦${widget.product.price.toStringAsFixed(2)}',
                       style: kTextStyle(isBold: true, size: 22),
                     ),
+                    FilledButton(
+                      onPressed: () {
+                        
+                      },
+                      style: FilledButton.styleFrom(
+                        backgroundColor: Colors.blue[700],
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12)),
+                        elevation: 0,
+                      ),
+                      child: Text("Place an Order"),
+                    )
                   ],
                 ),
               ),
@@ -94,7 +107,6 @@ class _ProductDetailedScreenState extends State<ProductDetailedScreen> {
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(onPressed: (){})
     );
   }
 }

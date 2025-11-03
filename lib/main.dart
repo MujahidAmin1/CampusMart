@@ -1,4 +1,4 @@
-import 'package:campus_mart/core/utils/loading_screen.dart';
+import 'package:campus_mart/core/loading_screen.dart';
 import 'package:campus_mart/features/auth/controller/auth_controller.dart';
 import 'package:campus_mart/features/auth/view/authscreen.dart';
 import 'package:campus_mart/features/bottomNavBar/home/homeview.dart';

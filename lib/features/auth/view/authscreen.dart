@@ -24,7 +24,7 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
   TextEditingController regNoController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
-  AutovalidateMode _autovalidateMode = AutovalidateMode.disabled;
+  final AutovalidateMode _autovalidateMode = AutovalidateMode.disabled;
   @override
   Widget build(BuildContext context) {
     final isSignup = ref.watch(isSignupProvider);

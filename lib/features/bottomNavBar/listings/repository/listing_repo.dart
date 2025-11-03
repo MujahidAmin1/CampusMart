@@ -2,9 +2,9 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:appwrite/appwrite.dart';
-import 'package:campus_mart/core/utils/appwrite_img_upl.dart';
-import 'package:campus_mart/core/utils/bucket_ids.dart';
-import 'package:campus_mart/core/utils/providers.dart';
+import 'package:campus_mart/core/appwrite_img_upl.dart';
+import 'package:campus_mart/core/bucket_ids.dart';
+import 'package:campus_mart/core/providers.dart';
 import 'package:campus_mart/models/product.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -62,5 +62,30 @@ class ProductListRepository {
       log(e.toString());
       throw Exception("Error creating product listing");
     }
+  }
+
+  Future updateProduct(Product product) async {
+    final updatedProd = product.copyWith(
+      productId: product.productId,
+      ownerId: product.ownerId,
+      title: product.title,
+      description: product.description,
+      price: product.price,
+      category: product.category,
+      isAvailable: product.isAvailable,
+      datePosted: product.datePosted,
+      imageUrls: product.imageUrls,
+    );
+    final productDoc = FirebaseFirestore.instance
+        .collection("products")
+        .doc(product.productId);
+    await productDoc.update(updatedProd.toMap());
+  }
+
+  Future deleteProduct(Product product) async {
+    final productDoc = FirebaseFirestore.instance
+        .collection("products")
+        .doc(product.productId);
+    await productDoc.delete();
   }
 }

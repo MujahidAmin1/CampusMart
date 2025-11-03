@@ -31,6 +31,7 @@ class ProductListController extends StateNotifier<AsyncValue<List<Product>>> {
   ProductListController(this.ref) : super(AsyncValue.loading()) {
     fetchAllProducts();
   }
+  
   void fetchAllProducts() async {
     try {
       ref.read(productListProvider).fetchAllProducts();
@@ -41,9 +42,17 @@ class ProductListController extends StateNotifier<AsyncValue<List<Product>>> {
 
   void createProduct(Product product) async {
     try {
+      
       ref.read(productListProvider).createProduct(product);
     } on Exception catch (e) {
       log(e.toString());
+    }
+  }
+  void updateProduct(Product product) async {
+    try {
+      ref.read(productListProvider).updateProduct(product);
+    } catch (e) {
+      throw Exception(e);
     }
   }
 }

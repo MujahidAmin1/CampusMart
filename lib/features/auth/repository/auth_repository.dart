@@ -1,6 +1,6 @@
 import 'dart:developer';
 
-import 'package:campus_mart/core/utils/providers.dart';
+import 'package:campus_mart/core/providers.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' hide User;
 import 'package:flutter_riverpod/flutter_riverpod.dart';

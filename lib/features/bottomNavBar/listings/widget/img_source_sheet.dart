@@ -1,4 +1,4 @@
-import 'package:campus_mart/core/utils/img_picker.dart';
+import 'package:campus_mart/core/img_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
