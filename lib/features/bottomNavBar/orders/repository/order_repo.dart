@@ -29,6 +29,16 @@ class OrderRepo {
       throw (e.toString());
     }
   }
+  Stream<List<Order>> fetchUserOrders(String userId) {
+  return firebaseFirestore
+      .collection('orders')
+      .where('buyerId', isEqualTo: userId)
+      .orderBy('createdAt', descending: true)
+      .snapshots()
+      .map((snapshot) => snapshot.docs
+          .map((doc) => Order.fromMap(doc.data()))
+          .toList());
+}
 
 
 }

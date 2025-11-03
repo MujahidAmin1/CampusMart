@@ -8,22 +8,15 @@ final ordersProvider = StreamProvider.autoDispose<List<Order>>((ref) {
   final userId = repo.firebaseAuth.currentUser?.uid;
   
   if (userId == null) {
-    return Stream.value([]); // Return empty stream for logged-out users
+    return Stream.value([]);
   }
-  
-  return repo.firebaseFirestore
-      .collection('orders')
-      .where('buyerId', isEqualTo: userId)
-      .orderBy('createdAt', descending: true) 
-      .snapshots()
-      .map((snapshot) => snapshot.docs
-          .map((doc) => Order.fromMap(doc.data()))
-          .toList());
+
+  return repo.fetchUserOrders(userId);
 });
 
-// Order actions provider for mutations
-
-final orderActionsProvider = Provider((ref) => OrderActions(ref));
+final orderActionsProvider = Provider.autoDispose((ref) {
+  return OrderActions(ref);
+});
 
 class OrderActions {
   final Ref _ref;
@@ -31,7 +24,6 @@ class OrderActions {
   
   Future<void> createOrder(Order order) async {
     await _ref.read(orderProvider).createOrder(order);
-    _ref.invalidate(ordersProvider); // Refresh list
   }
 }
 
