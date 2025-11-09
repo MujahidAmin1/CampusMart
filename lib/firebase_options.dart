@@ -48,17 +48,17 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions web = FirebaseOptions(
     apiKey: 'AIzaSyAfgDsgwG8tyec4Blg6jlYsw7uQZ97IOqM',
-    appId: '1:193135757173:web:5efd992616b9738a94b53c',
+    appId: '1:193135757173:web:31cd724b598c8a2894b53c',
     messagingSenderId: '193135757173',
     projectId: 'campusmart-12d1f',
     authDomain: 'campusmart-12d1f.firebaseapp.com',
     storageBucket: 'campusmart-12d1f.firebasestorage.app',
-    measurementId: 'G-KC2EPQKG2T',
+    measurementId: 'G-LPXFW2BWR8',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyCEOS0yQ1Gi9yutqMxHZZVwHXT2vE8mPG0',
-    appId: '1:193135757173:android:f7c96ef279a67f6994b53c',
+    appId: '1:193135757173:android:1ce1bb7563a51ede94b53c',
     messagingSenderId: '193135757173',
     projectId: 'campusmart-12d1f',
     storageBucket: 'campusmart-12d1f.firebasestorage.app',
@@ -66,10 +66,11 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyBUtJO-o6YSJ0YrLFrfV3SgOQ_ooIMRmZQ',
-    appId: '1:193135757173:ios:8bd9fdac7140d87194b53c',
+    appId: '1:193135757173:ios:223a295ae575ecc594b53c',
     messagingSenderId: '193135757173',
     projectId: 'campusmart-12d1f',
     storageBucket: 'campusmart-12d1f.firebasestorage.app',
-    iosBundleId: 'com.example.shopify1',
+    iosBundleId: 'com.example.campusmart',
   );
+
 }

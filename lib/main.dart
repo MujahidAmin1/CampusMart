@@ -1,8 +1,9 @@
-import 'package:campus_mart/core/loading_screen.dart';
-import 'package:campus_mart/features/auth/controller/auth_controller.dart';
-import 'package:campus_mart/features/auth/view/authscreen.dart';
-import 'package:campus_mart/features/bottomNavBar/home/homeview.dart';
-import 'package:campus_mart/firebase_options.dart';
+import 'package:campusmart/core/loading_screen.dart';
+import 'package:campusmart/core/providers.dart';
+import 'package:campusmart/features/auth/controller/auth_controller.dart';
+import 'package:campusmart/features/auth/view/authscreen.dart';
+import 'package:campusmart/features/bottomNavBar/home/homeview.dart';
+import 'package:campusmart/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -26,19 +27,16 @@ class MainApp extends ConsumerWidget{
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    var currentUser = ref.watch(authControllerProvider);
-    return MaterialApp(
-      home: currentUser.when(
-        data: (user) => BottomBarC(), 
-        error: (_, __) => LoadingScreen(
-          message: 'Checking authentication...',
-          subtitle: 'Please wait',
-        ) , 
-        loading: ()=> SpinKitSpinningLines(color: Colors.black),
-        ),
-      theme: ThemeData(
-        useMaterial3: true,
-      ),
-    );
+   var currentUser = ref.watch(authChangesProvider); // Use this instead
+return MaterialApp(
+  home: currentUser.when(
+    data: (firebaseUser) => firebaseUser != null ? BottomBarC() : AuthScreen(), 
+    error: (_, __) => AuthScreen(), 
+    loading: () => Scaffold(
+      body: Center(
+        child: SpinKitSpinningLines(color: Colors.black)
+      )
+    ),
+  ),);
   }
 }

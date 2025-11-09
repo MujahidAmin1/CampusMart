@@ -1,8 +1,8 @@
-import 'package:campus_mart/features/auth/controller/auth_controller.dart';
-import 'package:campus_mart/features/auth/widget/submitBtn.dart';
+import 'package:campusmart/features/auth/controller/auth_controller.dart';
+import 'package:campusmart/features/auth/widget/submitBtn.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:campus_mart/core/utils/ktextstyle.dart';
+import 'package:campusmart/core/utils/ktextstyle.dart';
 
 final isSignupProvider = StateProvider<bool>(
   (ref) => true,
@@ -122,25 +122,47 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
                   },
                 ),
                 const SizedBox(height: 10),
-                buildSubmitButton(isSignup, authstate, () {
+                buildSubmitButton(isSignup, authstate, () async {
                   if (_formKey.currentState!.validate()) {
                     final authcontroller =
                         ref.read(authControllerProvider.notifier);
                     if (isSignup) {
-                      authcontroller.register(
+                      await authcontroller.register(
                         usernameController.text.trim(),
                         emailController.text.trim(),
                         regNoController.text.trim(),
                         passwordController.text.trim(),
                       );
                     } else {
-                      authcontroller.login(
+                     await authcontroller.login(
                         emailController.text.trim(),
                         passwordController.text.trim(),
                       );
                     }
                   }
-                })
+                  }
+                  ),                const SizedBox(height: 10),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        isSignup
+                            ? "Already have an account? "
+                            : "Don't have an account? ",
+                        style: kTextStyle(size: 14),
+                      ),
+                      GestureDetector(
+                        onTap: () => toggleAuthStatus(ref, !isSignup),
+                        child: Text(
+                          isSignup ? "Sign In" : "Sign Up",
+                          style: kTextStyle(size: 14).copyWith(
+                            color: Color(0xff8E6CEF),
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
               ],
             ),
           ),

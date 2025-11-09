@@ -1,5 +1,5 @@
-import 'package:campus_mart/core/utils/ktextstyle.dart';
-import 'package:campus_mart/core/utils/price_format.dart';
+import 'package:campusmart/core/utils/ktextstyle.dart';
+import 'package:campusmart/core/utils/price_format.dart';
 import 'package:flutter/material.dart';
 
 class ProductDisplay extends StatelessWidget {

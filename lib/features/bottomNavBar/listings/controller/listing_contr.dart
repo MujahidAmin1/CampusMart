@@ -1,7 +1,7 @@
 import 'dart:developer';
 
-import 'package:campus_mart/features/bottomNavBar/listings/repository/listing_repo.dart';
-import 'package:campus_mart/models/product.dart';
+import 'package:campusmart/features/bottomNavBar/listings/repository/listing_repo.dart';
+import 'package:campusmart/models/product.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final categoryFilterProvider = StateProvider<Category>((ref) => Category.all);

@@ -1,4 +1,4 @@
-import 'package:campus_mart/core/utils/ktextstyle.dart';
+import 'package:campusmart/core/utils/ktextstyle.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

@@ -7,9 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:193135757173:android:f7c96ef279a67f6994b53c",
+        "mobilesdk_app_id": "1:193135757173:android:1ce1bb7563a51ede94b53c",
         "android_client_info": {
-          "package_name": "com.example.shopify1"
+          "package_name": "com.example.campusmart"
         }
       },
       "oauth_client": [],

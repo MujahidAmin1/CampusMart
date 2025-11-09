@@ -1,4 +1,4 @@
-import 'package:campus_mart/features/auth/repository/auth_repository.dart';
+import 'package:campusmart/features/auth/repository/auth_repository.dart';
 import 'package:riverpod/riverpod.dart';
 
 final authControllerProvider = StateNotifierProvider<AuthController, AsyncValue<void>>((ref) {

@@ -1,6 +1,6 @@
 import 'dart:developer';
 
-import 'package:campus_mart/core/providers.dart';
+import 'package:campusmart/core/providers.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' hide User;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -15,6 +15,7 @@ FirebaseFirestore _fire = FirebaseFirestore.instance;
 class AuthRepository {
   final FirebaseAuth firebaseAuth;
   AuthRepository({required this.firebaseAuth});
+  
   //create
   Future<UserCredential?> createUser(
       String username, String email, String regNo, String password) async {
@@ -33,6 +34,7 @@ class AuthRepository {
         id: user.uid,
         regNo: regNo,
       ).toMap());
+      return credentials;
     } on Exception catch (e) {
       throw Exception(e);
     } 
@@ -46,11 +48,15 @@ class AuthRepository {
         password: password,
       );
       final user = creds.user!;
+      
+      final userDoc = await _fire.collection('users').doc(user.uid).get();
       log(user.toString());
+      return User.fromMap(userDoc.data()!);
     } on Exception catch (e) {
       throw Exception(e);
     }
   }
+  
   Future<void> logout()async{
     await firebaseAuth.signOut();
   }

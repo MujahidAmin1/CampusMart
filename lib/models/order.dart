@@ -16,7 +16,7 @@ enum OrderStatus {
   processing,
   paid,
   shipped,
-  Recieved,
+  recieved,
   cancelled,
   completed,
 }

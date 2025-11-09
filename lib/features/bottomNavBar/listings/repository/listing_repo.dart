@@ -2,10 +2,10 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:appwrite/appwrite.dart';
-import 'package:campus_mart/core/appwrite_img_upl.dart';
-import 'package:campus_mart/core/bucket_ids.dart';
-import 'package:campus_mart/core/providers.dart';
-import 'package:campus_mart/models/product.dart';
+import 'package:campusmart/core/appwrite_img_upl.dart';
+import 'package:campusmart/core/bucket_ids.dart';
+import 'package:campusmart/core/providers.dart';
+import 'package:campusmart/models/product.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

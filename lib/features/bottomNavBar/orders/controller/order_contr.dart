@@ -1,6 +1,6 @@
 
-import 'package:campus_mart/features/bottomNavBar/orders/repository/order_repo.dart';
-import 'package:campus_mart/models/order.dart';
+import 'package:campusmart/features/bottomNavBar/orders/repository/order_repo.dart';
+import 'package:campusmart/models/order.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final ordersProvider = StreamProvider.autoDispose<List<Order>>((ref) {

@@ -1,5 +1,5 @@
+import 'dart:developer' show log;
 import 'dart:io';
-import 'dart:nativewrappers/_internal/vm/lib/developer.dart';
 import 'package:image_picker/image_picker.dart';
 
 Future<File?> pickImage() async {

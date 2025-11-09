@@ -1,5 +1,5 @@
-import 'package:campus_mart/features/bottomNavBar/listings/view/listing_screen.dart';
-import 'package:campus_mart/features/bottomNavBar/navbar_controller..dart';
+import 'package:campusmart/features/bottomNavBar/listings/view/listing_screen.dart';
+import 'package:campusmart/features/bottomNavBar/navbar_controller..dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

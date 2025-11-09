@@ -1,13 +1,13 @@
 import 'dart:io';
 
 import 'package:another_flushbar/flushbar.dart';
-import 'package:campus_mart/core/utils/extensions.dart';
-import 'package:campus_mart/features/auth/repository/auth_repository.dart';
-import 'package:campus_mart/features/bottomNavBar/listings/controller/listing_contr.dart';
-import 'package:campus_mart/features/bottomNavBar/listings/repository/listing_repo.dart';
-import 'package:campus_mart/features/bottomNavBar/listings/widget/category_chips.dart';
-import 'package:campus_mart/features/bottomNavBar/listings/widget/img_source_sheet.dart';
-import 'package:campus_mart/models/product.dart';
+import 'package:campusmart/core/utils/extensions.dart';
+import 'package:campusmart/features/auth/repository/auth_repository.dart';
+import 'package:campusmart/features/bottomNavBar/listings/controller/listing_contr.dart';
+import 'package:campusmart/features/bottomNavBar/listings/repository/listing_repo.dart';
+import 'package:campusmart/features/bottomNavBar/listings/widget/category_chips.dart';
+import 'package:campusmart/features/bottomNavBar/listings/widget/img_source_sheet.dart';
+import 'package:campusmart/models/product.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
