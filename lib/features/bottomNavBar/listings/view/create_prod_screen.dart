@@ -25,180 +25,424 @@ class _CreateProdScreenState extends ConsumerState<CreateProdScreen> {
   TextEditingController titleController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
   TextEditingController priceController = TextEditingController();
+  List<File?> selectedImages = []; // Moved to state variable
+  
   @override
   Widget build(BuildContext context) {
     final selectedCategory = ref.watch(categoryFilterProvider);
     final listingsProvider = ref.watch(productListProvider);
-    final List<File?> selectedImages = [];
     var width = MediaQuery.of(context).size.width;
     var height = MediaQuery.of(context).size.height;
     return Scaffold(
+      backgroundColor: Colors.grey.shade50,
       appBar: AppBar(
-        title: Text("Create Product"),
+        elevation: 0,
+        backgroundColor: Colors.white,
+        title: Text(
+          "Create Product",
+          style: TextStyle(
+            color: Color(0xff3A2770),
+            fontWeight: FontWeight.bold,
+            fontSize: 22,
+          ),
+        ),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_ios_new, color: Color(0xff3A2770)),
+          onPressed: () => Navigator.pop(context),
+        ),
       ),
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 16),
         child: ListView(
           children: [
+            SizedBox(height: 20),
             Column(
-              spacing: 15,
+              spacing: 20,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                DottedBorder(
-                  padding: EdgeInsets.all(12),
-                  color: Colors.grey, // border color
-                  strokeWidth: 1.5,
-                  dashPattern: [6, 3], // [dash length, space length]
-                  borderType: BorderType.RRect,
-                  radius: Radius.circular(12),
-                  child: Wrap(
-                    runSpacing: 9,
-                    spacing: 8,
+                // Category Section
+                Container(
+                  padding: EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Color(0xff8E6CEF).withOpacity(0.08),
+                        blurRadius: 10,
+                        offset: Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      ...Category.values.skip(0).map(
-                            (value) => CategoryChips(
-                              selectedColor: Color(0xff8E6CEF),
-                              label:
-                                  "${value.name[0].toUpperCase()}${value.name.substring(1)}",
-                              isSelected: selectedCategory == value,
-                              onTap: () {
-                                ref
-                                    .read(categoryFilterProvider.notifier)
-                                    .state = value;
-                              },
+                      Row(
+                        children: [
+                          Container(
+                            padding: EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              color: Color(0xff8E6CEF).withOpacity(0.1),
+                              borderRadius: BorderRadius.circular(8),
                             ),
-                          )
+                            child: Icon(
+                              Iconsax.category,
+                              color: Color(0xff8E6CEF),
+                              size: 20,
+                            ),
+                          ),
+                          SizedBox(width: 12),
+                          Text(
+                            "Select Category",
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xff3A2770),
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 16),
+                      Wrap(
+                        runSpacing: 10,
+                        spacing: 10,
+                        children: [
+                          ...Category.values.skip(1).map(
+                                (value) => CategoryChips(
+                                  selectedColor: Color(0xff8E6CEF),
+                                  label:
+                                      "${value.name[0].toUpperCase()}${value.name.substring(1)}",
+                                  isSelected: selectedCategory == value,
+                                  onTap: () {
+                                    ref
+                                        .read(categoryFilterProvider.notifier)
+                                        .state = value;
+                                  },
+                                ),
+                              )
+                        ],
+                      ),
                     ],
                   ),
                 ),
-                selectedImages.isEmpty
-                    ? Center(
-                        child: GestureDetector(
-                          onTap: () {
-                            showImageSourceActionSheet(context);
-                          },
-                          child: DottedBorder(
-                            color: Colors.grey, // border color
-                            strokeWidth: 1.5,
-                            dashPattern: [6, 3], // [dash length, space length]
-                            borderType: BorderType.RRect,
-                            radius: Radius.circular(12),
-                            child: Container(
+                
+                // Image Upload Section
+                Container(
+                  padding: EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Color(0xff8E6CEF).withOpacity(0.08),
+                        blurRadius: 10,
+                        offset: Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Container(
+                            padding: EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              color: Color(0xff6CEFBD).withOpacity(0.15),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Icon(
+                              Iconsax.gallery,
+                              color: Color(0xff6CEFBD),
+                              size: 20,
+                            ),
+                          ),
+                          SizedBox(width: 12),
+                          Text(
+                            "Product Images",
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xff3A2770),
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 16),
+                      selectedImages.isEmpty
+                          ? GestureDetector(
+                              onTap: () {
+                                showImageSourceActionSheet(context, (images) {
+                                  setState(() {
+                                    selectedImages.addAll(images);
+                                  });
+                                });
+                              },
+                              child: Container(
                                 width: width,
                                 height: height * 0.2,
-                                alignment: Alignment.center,
-                                child: Center(
-                                  child: Icon(
-                                    Iconsax.document_upload,
-                                    color: Colors.grey,
-                                    size: 30,
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    colors: [
+                                      Color(0xff8E6CEF).withOpacity(0.05),
+                                      Color(0xff6CEFBD).withOpacity(0.05),
+                                    ],
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight,
                                   ),
-                                )),
-                          ),
-                        ),
-                      )
-                    : Center(
-                        child: SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: Row(
-                            spacing: 6,
-                            children: [
-                              ...selectedImages.asMap().entries.map((entry) {
-                                var img = entry.value;
-                                int index = entry.key;
-                                return Stack(
+                                  borderRadius: BorderRadius.circular(12),
+                                  border: Border.all(
+                                    color: Color(0xff8E6CEF).withOpacity(0.3),
+                                    width: 2,
+                                  ),
+                                ),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Image.file(
-                                      img!,
-                                      width: width,
-                                      height: 300,
-                                      fit: BoxFit.cover,
-                                      alignment: Alignment.center,
-                                      filterQuality: FilterQuality.high,
+                                    Container(
+                                      padding: EdgeInsets.all(16),
+                                      decoration: BoxDecoration(
+                                        color: Color(0xff8E6CEF).withOpacity(0.1),
+                                        shape: BoxShape.circle,
+                                      ),
+                                      child: Icon(
+                                        Iconsax.document_upload,
+                                        color: Color(0xff8E6CEF),
+                                        size: 32,
+                                      ),
                                     ),
-                                    Positioned(
-                                      top: 8,
-                                      right: 8,
-                                      child: GestureDetector(
-                                        onTap: () => setState(() {
-                                          selectedImages.removeAt(index);
-                                        }),
-                                        child: Container(
-                                          decoration: BoxDecoration(
-                                            color: Colors.black54,
-                                            shape: BoxShape.circle,
-                                          ),
-                                          child: const Padding(
-                                            padding: EdgeInsets.all(4),
-                                            child: Icon(
-                                              Icons.close,
-                                              color: Colors.white,
-                                              size: 20,
-                                            ),
+                                    SizedBox(height: 12),
+                                    Text(
+                                      "Tap to upload images",
+                                      style: TextStyle(
+                                        color: Color(0xff3A2770).withOpacity(0.6),
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            )
+                          : SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: Row(
+                                spacing: 10,
+                                children: [
+                                  ...selectedImages.asMap().entries.map((entry) {
+                                    var img = entry.value;
+                                    int index = entry.key;
+                                    return Stack(
+                                      children: [
+                                        ClipRRect(
+                                          borderRadius: BorderRadius.circular(12),
+                                          child: Image.file(
+                                            img!,
+                                            width: width * 0.7,
+                                            height: 250,
+                                            fit: BoxFit.cover,
+                                            alignment: Alignment.center,
+                                            filterQuality: FilterQuality.high,
                                           ),
                                         ),
-                                      ),
-                                    )
-                                  ],
-                                );
-                              }),
-                            ],
+                                        Positioned(
+                                          top: 8,
+                                          right: 8,
+                                          child: GestureDetector(
+                                            onTap: () => setState(() {
+                                              selectedImages.removeAt(index);
+                                            }),
+                                            child: Container(
+                                              decoration: BoxDecoration(
+                                                gradient: LinearGradient(
+                                                  colors: [
+                                                    Colors.red.shade400,
+                                                    Colors.red.shade600,
+                                                  ],
+                                                ),
+                                                shape: BoxShape.circle,
+                                                boxShadow: [
+                                                  BoxShadow(
+                                                    color: Colors.black26,
+                                                    blurRadius: 4,
+                                                    offset: Offset(0, 2),
+                                                  ),
+                                                ],
+                                              ),
+                                              child: const Padding(
+                                                padding: EdgeInsets.all(6),
+                                                child: Icon(
+                                                  Icons.close,
+                                                  color: Colors.white,
+                                                  size: 18,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        )
+                                      ],
+                                    );
+                                  }),
+                                ],
+                              ),
+                            ),
+                    ],
+                  ),
+                ),
+
+                // Product Details Section
+                Container(
+                  padding: EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Color(0xff8E6CEF).withOpacity(0.08),
+                        blurRadius: 10,
+                        offset: Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    spacing: 16,
+                    children: [
+                      Row(
+                        children: [
+                          Container(
+                            padding: EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              color: Color(0xffEFC66C).withOpacity(0.15),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Icon(
+                              Iconsax.edit,
+                              color: Color(0xffEFC66C),
+                              size: 20,
+                            ),
+                          ),
+                          SizedBox(width: 12),
+                          Text(
+                            "Product Details",
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xff3A2770),
+                            ),
+                          ),
+                        ],
+                      ),
+                      TextField(
+                        controller: titleController,
+                        cursorColor: Color(0xff8E6CEF),
+                        style: TextStyle(fontSize: 15),
+                        decoration: InputDecoration(
+                          labelText: "Title",
+                          labelStyle: TextStyle(color: Color(0xff3A2770).withOpacity(0.6)),
+                          prefixIcon: Icon(Iconsax.tag, color: Color(0xff8E6CEF), size: 20),
+                          filled: true,
+                          fillColor: Colors.grey.shade50,
+                          focusColor: Color(0xff8E6CEF),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: BorderSide(color: Colors.grey.shade300),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: BorderSide(color: Colors.grey.shade300),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide:
+                                BorderSide(color: Color(0xff8E6CEF), width: 2),
                           ),
                         ),
                       ),
-                TextField(
-                  controller: titleController,
-                  cursorColor: Color(0xff8E6CEF),
-                  decoration: InputDecoration(
-                    labelText: "Title",
-                    focusColor: Color(0xff8E6CEF),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(15),
-                      borderSide:
-                          BorderSide(color: Color(0xff8E6CEF), width: 2),
-                    ),
+                      TextField(
+                        controller: descriptionController,
+                        cursorColor: Color(0xff8E6CEF),
+                        maxLines: 4,
+                        style: TextStyle(fontSize: 15),
+                        decoration: InputDecoration(
+                          labelText: "Product Description",
+                          labelStyle: TextStyle(color: Color(0xff3A2770).withOpacity(0.6)),
+                          alignLabelWithHint: true,
+                          prefixIcon: Padding(
+                            padding: EdgeInsets.only(bottom: 60),
+                            child: Icon(Iconsax.document_text, color: Color(0xff8E6CEF), size: 20),
+                          ),
+                          filled: true,
+                          fillColor: Colors.grey.shade50,
+                          focusColor: Color(0xff8E6CEF),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: BorderSide(color: Colors.grey.shade300),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: BorderSide(color: Colors.grey.shade300),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide:
+                                BorderSide(color: Color(0xff8E6CEF), width: 2),
+                          ),
+                        ),
+                      ),
+                      TextField(
+                        controller: priceController,
+                        cursorColor: Color(0xff8E6CEF),
+                        keyboardType: TextInputType.number,
+                        style: TextStyle(fontSize: 15),
+                        decoration: InputDecoration(
+                          labelText: "Price",
+                          labelStyle: TextStyle(color: Color(0xff3A2770).withOpacity(0.6)),
+                          prefixIcon: Icon(Iconsax.dollar_circle, color: Color(0xffEFC66C), size: 20),
+                          filled: true,
+                          fillColor: Colors.grey.shade50,
+                          focusColor: Color(0xff8E6CEF),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: BorderSide(color: Colors.grey.shade300),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: BorderSide(color: Colors.grey.shade300),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide:
+                                BorderSide(color: Color(0xff8E6CEF), width: 2),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                TextField(
-                  controller: descriptionController,
-                  cursorColor: Color(0xff8E6CEF),
-                  maxLines: 4,
-                  decoration: InputDecoration(
-                    labelText: "Product Description",
-                    alignLabelWithHint: true,
-                    focusColor: Color(0xff8E6CEF),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(15),
-                      borderSide:
-                          BorderSide(color: Color(0xff8E6CEF), width: 2),
-                    ),
-                  ),
-                ),
-                TextField(
-                  controller: priceController,
-                  cursorColor: Color(0xff8E6CEF),
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                    labelText: "Price",
-                    focusColor: Color(0xff8E6CEF),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(15),
-                      borderSide:
-                          BorderSide(color: Color(0xff8E6CEF), width: 2),
-                    ),
-                  ),
-                ),
-                SizedBox(
+
+                // Create Button
+                Container(
                   width: double.infinity,
-                  child: FilledButton(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        Color(0xff8E6CEF),
+                        Color(0xff6CEFBD),
+                      ],
+                      begin: Alignment.centerLeft,
+                      end: Alignment.centerRight,
+                    ),
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Color(0xff8E6CEF).withOpacity(0.4),
+                        blurRadius: 12,
+                        offset: Offset(0, 6),
+                      ),
+                    ],
+                  ),
+                  child: ElevatedButton(
                     onPressed: () async {
                       if (selectedImages.isEmpty) {
                         Flushbar(
@@ -237,20 +481,32 @@ class _CreateProdScreenState extends ConsumerState<CreateProdScreen> {
 
                       context.pop();
                     },
-                    style: FilledButton.styleFrom(
-                      backgroundColor: Color(0xff8E6CEF),
-                      padding: EdgeInsets.symmetric(vertical: 16),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.transparent,
+                      shadowColor: Colors.transparent,
+                      padding: EdgeInsets.symmetric(vertical: 18),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15),
+                        borderRadius: BorderRadius.circular(16),
                       ),
                     ),
-                    child: Text(
-                      'Create Product',
-                      style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Iconsax.add_circle, color: Colors.white),
+                        SizedBox(width: 8),
+                        Text(
+                          'Create Product',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
+                SizedBox(height: 20),
               ],
             ),
           ],

@@ -1,5 +1,6 @@
 import 'package:campusmart/features/bottomNavBar/listings/view/listing_screen.dart';
 import 'package:campusmart/features/bottomNavBar/navbar_controller..dart';
+import 'package:campusmart/features/bottomNavBar/profile/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -16,7 +17,7 @@ class BottomBarC extends ConsumerWidget {
   ListingsScreen(),
   // BookMarkScreen(),
   // OrderScreen(),
-  // ProfileScreen(),
+  ProfileScreen(),
 ];
    return Scaffold(
     body: IndexedStack(

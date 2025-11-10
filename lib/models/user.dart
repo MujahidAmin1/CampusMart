@@ -1,9 +1,11 @@
+enum UserType { student, admin }
 
 class User {
   String username;
   String email;
   String id;
   String regNo;
+  UserType userType;
   String? profilePic;
   String? address;
   String? bio;
@@ -12,6 +14,7 @@ class User {
     required this.username,
     required this.id,
     required this.regNo,
+    this.userType = UserType.student,
     this.address,
     this.profilePic,
     this.bio,
@@ -23,6 +26,7 @@ class User {
       'email': email,
       'id': id,
       'regNo': regNo,
+      'userType': userType.name,
       'profilePic': profilePic,
       'address': address,
       'bio': bio,
@@ -35,6 +39,7 @@ class User {
       email: map['email'] ?? '',
       id: map['id'] ?? '',
       regNo: map['regNo'] ?? '',
+      userType: map['userType'] == 'admin' ? UserType.admin : UserType.student,
       profilePic: map['profilePic'] ?? '',
       address: map['address'] ?? '',
       bio: map['bio'] ?? '',

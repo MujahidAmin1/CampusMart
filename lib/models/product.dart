@@ -7,7 +7,7 @@ enum Category {
   furniture,
   books,
   sports,
-  stationery,
+  gadgets,
   others,
 }
 
