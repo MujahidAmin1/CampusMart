@@ -1,4 +1,5 @@
 import 'package:campusmart/core/utils/ktextstyle.dart';
+import 'package:campusmart/core/utils/my_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -8,7 +9,7 @@ Widget buildSubmitButton(bool isSignup, AsyncValue<void> authState, VoidCallback
       child: ElevatedButton(
         onPressed: authState.isLoading ? null : _handleSubmit,
         style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.blue[700],
+          backgroundColor: MyColors.purpleShade,
           foregroundColor: Colors.white,
           padding: const EdgeInsets.symmetric(vertical: 16),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
