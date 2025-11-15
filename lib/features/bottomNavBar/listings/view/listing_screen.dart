@@ -20,58 +20,191 @@ class ListingsScreen extends ConsumerWidget {
     final filteredProductsAsync = ref.watch(filteredProductsProvider);
 
     return Scaffold(
-      appBar: AppBar(title: Text('CampusMart')),
+      backgroundColor: Colors.grey.shade50,
+      appBar: AppBar(
+        elevation: 0,
+        backgroundColor: Colors.white,
+        title: Row(
+          children: [
+            Container(
+              padding: EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Color(0xff8E6CEF), Color(0xff6CEFBD)],
+                ),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Icon(Icons.shopping_bag, color: Colors.white, size: 20),
+            ),
+            SizedBox(width: 10),
+            Text(
+              'CampusMart',
+              style: TextStyle(
+                color: Color(0xff3A2770),
+                fontWeight: FontWeight.bold,
+                fontSize: 22,
+              ),
+            ),
+          ],
+        ),
+      ),
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(height: 10),
+            SizedBox(height: 16),
+            // Search Bar
             TextField(
               decoration: InputDecoration(
-                prefixIcon: Icon(Iconsax.search_favorite),
-                hintText: "search",
+                prefixIcon: Icon(Iconsax.search_favorite, color: Color(0xff8E6CEF)),
+                hintText: "Search products...",
+                hintStyle: TextStyle(color: Colors.grey.shade400),
+                filled: true,
+                fillColor: Colors.white,
                 border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(25),
+                  borderRadius: BorderRadius.circular(16),
+                  borderSide: BorderSide.none,
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(16),
+                  borderSide: BorderSide(color: Colors.grey.shade200),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(16),
+                  borderSide: BorderSide(color: Color(0xff8E6CEF), width: 2),
                 ),
               ),
             ),
-            SizedBox(height: 10),
-            Text("Categories", style: kTextStyle(size: 20, isBold: true)),
-            SizedBox(height: 10),
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: [
-                  for (var value in Category.values) ...[
-                    CategoryChips(
-                      selectedColor: Color(0xff8E6CEF),
-                      label: "${value.name[0].toUpperCase()}${value.name.substring(1)}",
-                      isSelected: selectedCategory == value,
-                      onTap: () {
-                        // Update the provider state instead of setState
-                        ref.read(categoryFilterProvider.notifier).state = value;
-                      },
-                    ),
-                    SizedBox(width: 8),
-                  ],
-                ],
-              ),
+            SizedBox(height: 20),
+            
+            // Categories Header
+            Text(
+              "Categories",
+              style: kTextStyle(size: 18, isBold: true, color: Color(0xff3A2770)),
             ),
-            SizedBox(height: 10),
+            SizedBox(height: 12),
+            
+            // Categories Row with Filter Button
+            Row(
+              children: [
+                Expanded(
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      spacing: 8,
+                      children: [
+                        for (var value in Category.values)
+                          CategoryChips(
+                            selectedColor: Color(0xff8E6CEF),
+                            label: "${value.name[0].toUpperCase()}${value.name.substring(1)}",
+                            isSelected: selectedCategory == value,
+                            onTap: () {
+                              ref.read(categoryFilterProvider.notifier).state = value;
+                            },
+                          ),
+                      ],
+                    ),
+                  ),
+                ),
+                SizedBox(width: 8),
+                Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: Colors.grey.shade200),
+                  ),
+                  child: IconButton(
+                    onPressed: () {
+                      showModalBottomSheet(
+                        context: context,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+                        ),
+                        builder: (context) {
+                          return Container(
+                            padding: EdgeInsets.all(20),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      'Filters',
+                                      style: TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold,
+                                        color: Color(0xff3A2770),
+                                      ),
+                                    ),
+                                    IconButton(
+                                      onPressed: () => Navigator.pop(context),
+                                      icon: Icon(Icons.close),
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(height: 16),
+                                Text(
+                                  'Price Range',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                    color: Color(0xff3A2770),
+                                  ),
+                                ),
+                                SizedBox(height: 12),
+                                // Add your filter widgets here
+                                Text('Filter options coming soon...'),
+                                SizedBox(height: 20),
+                              ],
+                            ),
+                          );
+                        },
+                      );
+                    },
+                    icon: Icon(Iconsax.filter, color: Color(0xff8E6CEF)),
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 16),
+            
+            // Products Grid
             Expanded(
               child: filteredProductsAsync.when(
                 data: (products) {
                   if (products.isEmpty) {
-                    return Center(child: Text('No Products available'));
+                    return Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Iconsax.shop,
+                            size: 80,
+                            color: Colors.grey.shade300,
+                          ),
+                          SizedBox(height: 16),
+                          Text(
+                            'No Products Available',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
+                              color: Color(0xff3A2770).withOpacity(0.6),
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
                   }
 
                   return GridView.builder(
                     gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2,
-                      crossAxisSpacing: 4,
-                      mainAxisSpacing: 4,
-                      mainAxisExtent: 220,
+                      crossAxisSpacing: 12,
+                      mainAxisSpacing: 12,
+                      mainAxisExtent: 240,
                     ),
                     itemCount: products.length,
                     itemBuilder: (context, index) {
@@ -89,7 +222,9 @@ class ListingsScreen extends ConsumerWidget {
                           );
                         },
                         child: ProductDisplay(
-                          img: currentProduct.imageUrls.first,
+                          img: currentProduct.imageUrls.isNotEmpty
+                              ? currentProduct.imageUrls[0]
+                              : '',
                           title: currentProduct.title,
                           description: currentProduct.description,
                           price: currentProduct.price,
@@ -99,12 +234,60 @@ class ListingsScreen extends ConsumerWidget {
                   );
                 },
                 loading: () => Center(
-                  child: SpinKitSpinningLines(color: Colors.black),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        padding: EdgeInsets.all(20),
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [Color(0xff8E6CEF), Color(0xff6CEFBD)],
+                          ),
+                          shape: BoxShape.circle,
+                        ),
+                        child: SpinKitSpinningLines(
+                          color: Colors.white,
+                          size: 40,
+                        ),
+                      ),
+                      SizedBox(height: 16),
+                      Text(
+                        'Loading products...',
+                        style: TextStyle(
+                          color: Color(0xff3A2770).withOpacity(0.6),
+                          fontSize: 14,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
                 error: (error, stack) => Center(
-                  child: Text(
-                    error.toString(),
-                    style: kTextStyle(color: Colors.red),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.error_outline,
+                        size: 60,
+                        color: Colors.red.shade300,
+                      ),
+                      SizedBox(height: 16),
+                      Text(
+                        'Failed to load products',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          color: Color(0xff3A2770),
+                        ),
+                      ),
+                      SizedBox(height: 8),
+                      Text(
+                        'Please try again later',
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.grey.shade600,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -112,13 +295,28 @@ class ListingsScreen extends ConsumerWidget {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Color(0xff8E6CEF),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(50),
+      floatingActionButton: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Color(0xff8E6CEF), Color(0xff6CEFBD)],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          shape: BoxShape.circle,
+          boxShadow: [
+            BoxShadow(
+              color: Color(0xff8E6CEF).withOpacity(0.4),
+              blurRadius: 12,
+              offset: Offset(0, 4),
+            ),
+          ],
         ),
-        onPressed: () => context.push(CreateProdScreen()),
-        child: Icon(Iconsax.additem),
+        child: FloatingActionButton(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          onPressed: () => context.push(CreateProdScreen()),
+          child: Icon(Iconsax.add, color: Colors.white, size: 28),
+        ),
       ),
     );
   }

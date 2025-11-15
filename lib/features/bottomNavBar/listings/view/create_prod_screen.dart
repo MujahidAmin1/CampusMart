@@ -25,12 +25,12 @@ class _CreateProdScreenState extends ConsumerState<CreateProdScreen> {
   TextEditingController titleController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
   TextEditingController priceController = TextEditingController();
-  List<File?> selectedImages = []; // Moved to state variable
+  List<File?> selectedImages = [];
   
   @override
   Widget build(BuildContext context) {
     final selectedCategory = ref.watch(categoryFilterProvider);
-    final listingsProvider = ref.watch(productListProvider);
+    final listingsProvider = ref.watch(myProductListProvider);
     var width = MediaQuery.of(context).size.width;
     var height = MediaQuery.of(context).size.height;
     return Scaffold(
@@ -470,9 +470,9 @@ class _CreateProdScreenState extends ConsumerState<CreateProdScreen> {
                         category: Category.values[selectedCategory.index].name,
                         isAvailable: true,
                         datePosted: DateTime.now(),
-                        imageUrls: [],
+                        imageUrls: selectedImages.map((e) => e!.path).toList(),
                       );
-                      listingsProvider.createProduct(product);
+                      await listingsProvider.createProduct(product);
                       Flushbar(
                         flushbarPosition: FlushbarPosition.TOP,
                         title: 'Product created',

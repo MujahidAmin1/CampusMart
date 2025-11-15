@@ -1,4 +1,5 @@
-import 'package:appwrite/appwrite.dart';
+
+import 'package:campusmart/core/cloudinary_img_upl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -11,17 +12,12 @@ final authChangesProvider = StreamProvider((ref) {
   return ref.watch(firebaseAuthProvider).authStateChanges();
 });
 
-final appwriteClientProvider = Provider(
-  (ref) {
-    final client = Client()
-        .setEndpoint('https://fra.cloud.appwrite.io/v1')
-        .setProject('68f8a26b001714973226');
-    return client;
-  },
-);
-final appwriteStorageProvider = Provider((ref) {
-  final client = ref.watch(appwriteClientProvider);
-  return Storage(client);
+final cloudinaryServiceProvider = Provider<CloudinaryService>((ref) {
+  return CloudinaryService(
+    cloudName: 'doy2uumie',
+    apiKey: '114992431948494',
+    apiSecret: 'zPUK12h_L9DBYOa0JCoF-eEhNcg',
+  );
 });
 final firestoreProvider = Provider((ref) {
   return FirebaseFirestore.instance;

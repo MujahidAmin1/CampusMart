@@ -1,6 +1,8 @@
 import 'package:campusmart/features/bottomNavBar/listings/view/listing_screen.dart';
 import 'package:campusmart/features/bottomNavBar/navbar_controller..dart';
-import 'package:campusmart/features/bottomNavBar/profile/profile.dart';
+import 'package:campusmart/features/bottomNavBar/orders/view/order_screen.dart';
+import 'package:campusmart/features/bottomNavBar/profile/view/profile.dart';
+import 'package:campusmart/features/bottomNavBar/wishlist/wishlist_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -15,8 +17,8 @@ class BottomBarC extends ConsumerWidget {
     var currentScreen = ref.watch(currentScreenProvider);
     List<Widget> screens = [
   ListingsScreen(),
-  // BookMarkScreen(),
-  // OrderScreen(),
+   WishlistScreen(),
+  OrderScreen(),
   ProfileScreen(),
 ];
    return Scaffold(
@@ -38,7 +40,7 @@ class BottomBarC extends ConsumerWidget {
           const NavigationDestination(
             selectedIcon: Icon(Iconsax.bookmark),
             icon: Icon(Iconsax.bookmark_copy),
-            label: 'Notifications',
+            label: 'Wishlist',
           ),
           const NavigationDestination(
             selectedIcon: Icon(Iconsax.bookmark),

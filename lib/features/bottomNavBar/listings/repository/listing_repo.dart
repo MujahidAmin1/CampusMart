@@ -1,31 +1,31 @@
 import 'dart:developer';
 import 'dart:io';
 
-import 'package:appwrite/appwrite.dart';
-import 'package:campusmart/core/appwrite_img_upl.dart';
-import 'package:campusmart/core/bucket_ids.dart';
+import 'package:campusmart/core/cloudinary_img_upl.dart';
 import 'package:campusmart/core/providers.dart';
 import 'package:campusmart/models/product.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-final productListProvider = Provider<ProductListRepository>((ref) {
+final productRepositoryProvider = Provider<ProductListRepository>((ref) {
   return ProductListRepository(
     firebaseAuth: ref.watch(firebaseAuthProvider),
     firebaseFirestore: ref.watch(firestoreProvider),
-    storage: ref.watch(appwriteStorageProvider),
+    cloudinaryService: ref.watch(cloudinaryServiceProvider),
   );
 });
 
 class ProductListRepository {
-  FirebaseFirestore firebaseFirestore;
-  FirebaseAuth firebaseAuth;
-  Storage storage;
+  final FirebaseFirestore firebaseFirestore;
+  final FirebaseAuth firebaseAuth;
+  final CloudinaryService cloudinaryService;
+
   ProductListRepository({
     required this.firebaseAuth,
     required this.firebaseFirestore,
-    required this.storage,
+    required this.cloudinaryService,
+  
   });
 
   Stream<List<Product>> fetchAllProducts() {
@@ -44,26 +44,29 @@ class ProductListRepository {
 
   Future<void> createProduct(Product productListing) async {
     try {
+      // Upload all images to Cloudinary (same as before!)
       List<String> urls = await Future.wait(
-        productListing.imageUrls.map(
-          (url) async {
-            return await uploadImage(
-                storage, File(url), ImageBucketIDs.listings);
-          },
-        ),
+        productListing.imageUrls.map((path) async {
+          return await cloudinaryService.uploadImage(File(path));
+        }),
       );
 
+      // Create new product with Cloudinary URLs
       Product newProduct = productListing.copyWith(imageUrls: urls);
+      
       await firebaseFirestore
           .collection("products")
           .doc(newProduct.productId)
           .set(newProduct.toMap());
-    } on (FirebaseException, AppwriteException) catch (e) {
+          
+    } on FirebaseException catch (e) {
+      log(e.toString());
+      throw Exception("Error creating product listing");
+    } catch (e) {
       log(e.toString());
       throw Exception("Error creating product listing");
     }
   }
-
   Future updateProduct(Product product) async {
     final updatedProd = product.copyWith(
       productId: product.productId,
@@ -88,4 +91,8 @@ class ProductListRepository {
         .doc(product.productId);
     await productDoc.delete();
   }
+
+
 }
+
+  

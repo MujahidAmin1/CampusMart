@@ -1,13 +1,20 @@
 import 'dart:developer';
 
+import 'package:campusmart/core/providers.dart';
 import 'package:campusmart/features/bottomNavBar/listings/repository/listing_repo.dart';
 import 'package:campusmart/models/product.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final categoryFilterProvider = StateProvider<Category>((ref) => Category.all);
+final myProductListProvider = Provider<ProductListRepository>((ref) {
+  return ProductListRepository(
+    firebaseAuth: ref.watch(firebaseAuthProvider),
+    firebaseFirestore: ref.watch(firestoreProvider), cloudinaryService: ref.watch(cloudinaryServiceProvider),
+  );
+});
 
 final allProductsProvider = StreamProvider<List<Product>>((ref) {
-  final repo = ref.watch(productListProvider);
+  final repo = ref.watch(productRepositoryProvider);
   return repo.fetchAllProducts();
 });
 final filteredProductsProvider = Provider<AsyncValue<List<Product>>>((ref) {
@@ -27,14 +34,16 @@ final filteredProductsProvider = Provider<AsyncValue<List<Product>>>((ref) {
 });
 
 class ProductListController extends StateNotifier<AsyncValue<List<Product>>> {
+  final ProductListRepository productRepo;
   final Ref ref;
-  ProductListController(this.ref) : super(AsyncValue.loading()) {
+  ProductListController(this.ref, {required this.productRepo})
+      : super(AsyncValue.loading()) {
     fetchAllProducts();
   }
-  
+
   void fetchAllProducts() async {
     try {
-      ref.read(productListProvider).fetchAllProducts();
+      ref.read(productRepositoryProvider).fetchAllProducts();
     } catch (e) {
       throw Exception(e);
     }
@@ -42,15 +51,15 @@ class ProductListController extends StateNotifier<AsyncValue<List<Product>>> {
 
   void createProduct(Product product) async {
     try {
-      
-      ref.read(productListProvider).createProduct(product);
+      ref.read(productRepositoryProvider).createProduct(product);
     } on Exception catch (e) {
       log(e.toString());
     }
   }
+
   void updateProduct(Product product) async {
     try {
-      ref.read(productListProvider).updateProduct(product);
+      ref.read(productRepositoryProvider).updateProduct(product);
     } catch (e) {
       throw Exception(e);
     }

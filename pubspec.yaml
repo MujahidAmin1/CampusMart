@@ -8,8 +8,9 @@ environment:
 
 dependencies:
   another_flushbar: ^1.12.30
-  appwrite: ^20.2.1
   cloud_firestore: ^5.6.7
+  cloudinary_api: ^1.1.1
+  cloudinary_url_gen: ^1.8.0
   cupertino_icons: ^1.0.8
   dotted_border: ^2.1.0
   firebase_auth: ^5.5.3

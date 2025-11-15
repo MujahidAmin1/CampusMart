@@ -1,6 +1,5 @@
-import 'package:campusmart/core/loading_screen.dart';
+
 import 'package:campusmart/core/providers.dart';
-import 'package:campusmart/features/auth/controller/auth_controller.dart';
 import 'package:campusmart/features/auth/view/authscreen.dart';
 import 'package:campusmart/features/bottomNavBar/home/homeview.dart';
 import 'package:campusmart/firebase_options.dart';
