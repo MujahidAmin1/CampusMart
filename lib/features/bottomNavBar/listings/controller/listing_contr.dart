@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:campusmart/core/providers.dart';
 import 'package:campusmart/features/bottomNavBar/listings/repository/listing_repo.dart';
 import 'package:campusmart/models/product.dart';
+import 'package:campusmart/models/user.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final categoryFilterProvider = StateProvider<Category>((ref) => Category.all);
@@ -32,6 +33,19 @@ final filteredProductsProvider = Provider<AsyncValue<List<Product>>>((ref) {
       error: (e, st) => AsyncValue.error(e, st),
       loading: () => AsyncValue.loading());
 });
+
+// Provider to fetch product owner by ownerId
+final productOwnerProvider = FutureProvider.family<User, String>((ref, ownerId) async {
+  final repo = ref.watch(productRepositoryProvider);
+  return await repo.fetchProductOwner(ownerId);
+});
+
+// Provider to fetch all products by owner
+final ownerProductsProvider = FutureProvider.family<List<Product>, String>((ref, ownerId) async {
+  final repo = ref.watch(productRepositoryProvider);
+  return await repo.fetchProductsByOwner(ownerId);
+});
+
 
 class ProductListController extends StateNotifier<AsyncValue<List<Product>>> {
   final ProductListRepository productRepo;

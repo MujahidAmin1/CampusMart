@@ -4,7 +4,6 @@ class Wishlist {
   String productTitle;
   String productId;
   String userId;
-  int quantity;
   String wishlistId;
   String sellerId;
   DateTime addedAt;
@@ -15,7 +14,6 @@ class Wishlist {
     required this.productId,
     required this.sellerId,
     required this.wishlistId,
-    required this.quantity,
     required this.price,
     required this.addedAt,
   });
@@ -25,7 +23,6 @@ class Wishlist {
       userId: map['userId'] ?? '',
       productId: map['productId'] ?? '',
       wishlistId: map['wishlistId'] ?? '',
-      quantity: map['quantity'] ?? 1,
       sellerId: map['sellerId'] ?? '',
       price: map['price'] ?? 0,
       addedAt: (map['addedAt'] as Timestamp).toDate(),
@@ -38,7 +35,6 @@ class Wishlist {
       'productId': productId,
       'price': price,
       'wishlistId': wishlistId,
-      'quantity': quantity,
       'sellerId': sellerId,
       'addedAt': Timestamp.fromDate(addedAt),
     };

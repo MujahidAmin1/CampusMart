@@ -14,10 +14,12 @@ final wishlistRepo = Provider((ref) {
 class WishlistRepository {
   FirebaseAuth firebaseAuth;
   FirebaseFirestore firebaseFirestore;
+  
   WishlistRepository({
     required this.firebaseAuth,
     required this.firebaseFirestore,
   });
+
   Future<List<Wishlist>> fetchWishListByUserId(String userId) async {
     final wishDocs = await firebaseFirestore
         .collection('users')
@@ -27,22 +29,35 @@ class WishlistRepository {
     return wishDocs.docs.map((doc) => Wishlist.fromMap(doc.data())).toList();
   }
 
-  Future addItemToWishList(Wishlist item) async {
+  // Stream for real-time wishlist updates
+  Stream<List<Wishlist>> streamWishListByUserId(String userId) {
+    return firebaseFirestore
+        .collection('users')
+        .doc(userId)
+        .collection('wishlist')
+        .snapshots()
+        .map((snapshot) => 
+            snapshot.docs.map((doc) => Wishlist.fromMap(doc.data())).toList()
+        );
+  }
+
+  Future<List<Wishlist>> addItemToWishList(Wishlist item) async {
     try {
-      return firebaseFirestore
+      await firebaseFirestore
           .collection('users')
           .doc(item.userId)
           .collection('wishlist')
           .doc(item.wishlistId)
-          .set(
-            item.toMap(),
-          );
+          .set(item.toMap());
+      
+      // Fetch and return updated list
+      return await fetchWishListByUserId(item.userId);
     } catch (e) {
-      throw (e.toString());
+      throw Exception(e.toString());
     }
   }
 
-  Future removeFromWishList(Wishlist item) async {
+  Future<void> removeFromWishList(Wishlist item) async {
     try {
       await firebaseFirestore
           .collection('users')
@@ -51,7 +66,7 @@ class WishlistRepository {
           .doc(item.wishlistId)
           .delete();
     } catch (e) {
-      throw (e.toString());
+      throw Exception(e.toString());
     }
   }
 }

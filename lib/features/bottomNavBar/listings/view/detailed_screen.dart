@@ -1,23 +1,38 @@
+import 'package:campusmart/core/providers.dart';
+import 'package:campusmart/core/utils/extensions.dart';
 import 'package:campusmart/core/utils/ktextstyle.dart';
+import 'package:campusmart/features/auth/controller/auth_controller.dart';
+import 'package:campusmart/features/bottomNavBar/listings/controller/listing_contr.dart';
+import 'package:campusmart/features/bottomNavBar/listings/view/owner_profile_lists.dart';
+import 'package:campusmart/features/bottomNavBar/wishlist/controller/wishlist_contr.dart';
 import 'package:campusmart/models/product.dart';
+import 'package:campusmart/models/wishlist.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
+import 'package:uuid/uuid.dart';
 
-class ProductDetailedScreen extends StatefulWidget {
+class ProductDetailedScreen extends ConsumerStatefulWidget {
   final bool looped;
   final Product product;
   const ProductDetailedScreen(
       {super.key, required this.product, required this.looped});
 
   @override
-  State<ProductDetailedScreen> createState() => _ProductDetailedScreenState();
+  ConsumerState<ProductDetailedScreen> createState() =>
+      _ProductDetailedScreenState();
 }
 
-class _ProductDetailedScreenState extends State<ProductDetailedScreen> {
+class _ProductDetailedScreenState extends ConsumerState<ProductDetailedScreen> {
   int _currentImageIndex = 0;
 
   @override
   Widget build(BuildContext context) {
+    final wishlistState = ref.watch(wishlistControllerProvider);
+    final wishlistController = ref.read(wishlistControllerProvider.notifier);
+    final authuser = ref.read(firebaseAuthProvider).currentUser;
+    final isInWishlist = wishlistController.isInWishlist(widget.product.productId);
+    final productOwner = ref.watch(productOwnerProvider(widget.product.ownerId));
     double height = MediaQuery.of(context).size.height;
     return Scaffold(
       backgroundColor: Colors.white,
@@ -32,7 +47,8 @@ class _ProductDetailedScreenState extends State<ProductDetailedScreen> {
                   children: [
                     widget.product.imageUrls.length <= 1
                         ? Hero(
-                            tag: 'product-image-${widget.product.imageUrls.first}',
+                            tag:
+                                'product-image-${widget.product.imageUrls.first}',
                             child: Image.network(
                               widget.product.imageUrls.first,
                               width: double.infinity,
@@ -189,6 +205,41 @@ class _ProductDetailedScreenState extends State<ProductDetailedScreen> {
                           ),
                         ),
 
+                        // Seller/Owner
+                        if (productOwner.hasValue && productOwner.value != null)
+                          GestureDetector(
+                            onTap: () {
+                              context.push(
+                                OwnerProfileListsScreen(ownerId: widget.product.ownerId),
+                              );
+                            },
+                            child: Row(
+                              children: [
+                                Icon(
+                                  Iconsax.user,
+                                  size: 16,
+                                  color: Color(0xff8E6CEF),
+                                ),
+                                SizedBox(width: 6),
+                                Text(
+                                  'Owner: ',
+                                  style: kTextStyle(
+                                    size: 14,
+                                    color: Color(0xff3A2770).withOpacity(0.6),
+                                  ),
+                                ),
+                                Text(
+                                  productOwner.value!.username,
+                                  style: kTextStyle(
+                                    size: 14,
+                                    color: Color(0xff8E6CEF),
+                                    isBold: true,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+
                         // Description Section
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -259,12 +310,44 @@ class _ProductDetailedScreenState extends State<ProductDetailedScreen> {
                   ),
                 ],
               ),
-              child: IconButton(
-                onPressed: () {
-                  // Add to favorites
-                },
-                icon: Icon(Icons.favorite_border),
-                color: Color(0xff8E6CEF),
+              child: wishlistState.when(
+                data: (_) => IconButton(
+                  onPressed: () async {
+                    if (authuser == null) return;
+                    
+                    final item = Wishlist(
+                      productTitle: widget.product.title,
+                      userId: authuser.uid,
+                      productId: widget.product.productId,
+                      sellerId: widget.product.ownerId,
+                      wishlistId: Uuid().v4(),
+                      price: widget.product.price,
+                      addedAt: DateTime.now(),
+                    );
+                    
+                    try {
+                      await wishlistController.toggleWishlist(item);
+                    } catch (e) {
+                      if (mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('Error: ${e.toString()}')),
+                        );
+                      }
+                    }
+                  },
+                  icon: Icon(
+                    Iconsax.heart,
+                    color: isInWishlist ? Color(0xff8E6CEF) : Colors.grey,
+                  ),
+                ),
+                loading: () => IconButton(
+                  onPressed: null,
+                  icon: Icon(Iconsax.heart, color: Colors.grey),
+                ),
+                error: (_, __) => IconButton(
+                  onPressed: null,
+                  icon: Icon(Iconsax.heart, color: Colors.grey),
+                ),
               ),
             ),
           ),

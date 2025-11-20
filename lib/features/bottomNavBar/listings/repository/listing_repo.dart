@@ -4,8 +4,9 @@ import 'dart:io';
 import 'package:campusmart/core/cloudinary_img_upl.dart';
 import 'package:campusmart/core/providers.dart';
 import 'package:campusmart/models/product.dart';
+import 'package:campusmart/models/user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_auth/firebase_auth.dart' hide User;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final productRepositoryProvider = Provider<ProductListRepository>((ref) {
@@ -67,6 +68,7 @@ class ProductListRepository {
       throw Exception("Error creating product listing");
     }
   }
+
   Future updateProduct(Product product) async {
     final updatedProd = product.copyWith(
       productId: product.productId,
@@ -92,7 +94,37 @@ class ProductListRepository {
     await productDoc.delete();
   }
 
+  Future<User> fetchProductOwner(String ownerId) async {
+    try {
+      final userDoc = await firebaseFirestore
+          .collection('users')
+          .doc(ownerId)
+          .get();
+      
+      if (!userDoc.exists) {
+        throw Exception('User not found');
+      }
+      
+      return User.fromMap(userDoc.data()!);
+    } catch (e) {
+      log('Error fetching product owner: $e');
+      throw Exception('Failed to fetch owner information');
+    }
+  }
 
+  Future<List<Product>> fetchProductsByOwner(String ownerId) async {
+    try {
+      final productsSnapshot = await firebaseFirestore
+          .collection('products')
+          .where('ownerId', isEqualTo: ownerId)
+          .get();
+      
+      return productsSnapshot.docs
+          .map((doc) => Product.fromMap(doc.data()))
+          .toList();
+    } catch (e) {
+      log('Error fetching products by owner: $e');
+      throw Exception('Failed to fetch owner products');
+    }
+  }
 }
-
-  

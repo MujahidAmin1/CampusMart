@@ -1,8 +1,9 @@
 import 'package:campusmart/core/utils/ktextstyle.dart';
 import 'package:campusmart/core/utils/price_format.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class ProductDisplay extends StatelessWidget {
+class ProductDisplay extends ConsumerWidget {
   final String title;
   final String description;
   final double price;
@@ -17,7 +18,7 @@ class ProductDisplay extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -34,54 +35,26 @@ class ProductDisplay extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Image Section
-          Stack(
-            children: [
-              Hero(
-                tag: 'product-image-${img}',
-                child: ClipRRect(
-                  borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
-                  child: Image.network(
-                    img,
-                    width: double.infinity,
-                    height: 160,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ),
-              // Optional: Add favorite button
-              Positioned(
-                top: 8,
-                right: 8,
-                child: Container(
-                  padding: EdgeInsets.all(6),
-                  decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.9),
-                    shape: BoxShape.circle,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.1),
-                        blurRadius: 4,
-                      ),
-                    ],
-                  ),
-                  child: Icon(
-                    Icons.favorite_border,
-                    size: 18,
-                    color: Color(0xff8E6CEF),
-                  ),
-                ),
-              ),
-            ],
+          ClipRRect(
+            borderRadius:
+                const BorderRadius.vertical(top: Radius.circular(16)),
+            child: Image.network(
+              img,
+              width: double.infinity,
+              height: 160,
+              fit: BoxFit.cover,
+            ),
           ),
-          
-          // Details Section
+          // Title and Price Section
           Padding(
             padding: const EdgeInsets.all(12.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  title.length >= 18 ? '${title.substring(0, 18)}...' : title,
+                  title.length >= 18
+                      ? '${title.substring(0, 18)}...'
+                      : title,
                   style: kTextStyle(
                     size: 14,
                     isBold: true,

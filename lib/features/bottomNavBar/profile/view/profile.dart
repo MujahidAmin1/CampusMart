@@ -1,9 +1,11 @@
 import 'package:campusmart/core/providers.dart';
+import 'package:campusmart/core/utils/extensions.dart';
 import 'package:campusmart/core/utils/ktextstyle.dart';
 import 'package:campusmart/core/utils/my_colors.dart';
 import 'package:campusmart/features/auth/controller/auth_controller.dart';
 import 'package:campusmart/features/bottomNavBar/profile/controller/profie_contr.dart';
-import 'package:campusmart/features/bottomNavBar/profile/widget/buildmenuitem.dart';
+import 'package:campusmart/features/bottomNavBar/profile/view/myListings.dart';
+import 'package:campusmart/features/bottomNavBar/profile/widget/customW.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -154,7 +156,7 @@ class ProfileScreen extends ConsumerWidget {
                       Icons.shopping_bag_outlined,
                       'My Listings',
                       () {
-                        // Navigate to my listings
+                          context.push(MyListedItemsScreen());
                       },
                     ),
                     Divider(height: 1, indent: 60, endIndent: 16),
