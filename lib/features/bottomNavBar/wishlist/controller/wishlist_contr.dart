@@ -6,7 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Provider to get current user's wishlist with real-time updates
 final wishlistProvider = StreamProvider<List<Wishlist>>((ref) {
   final wishlistRepository = ref.watch(wishlistRepo);
-  final currentUser = ref.watch(firebaseAuthProvider).currentUser;
+  final authState = ref.watch(authChangesProvider);
+  final currentUser = authState.valueOrNull;
   
   if (currentUser == null) {
     return Stream.value([]);
@@ -19,7 +20,8 @@ final wishlistProvider = StreamProvider<List<Wishlist>>((ref) {
 final wishlistControllerProvider = StateNotifierProvider<
     WishlistController, AsyncValue<List<Wishlist>>>((ref) {
   final wishlistRepository = ref.watch(wishlistRepo);
-  final currentUser = ref.watch(firebaseAuthProvider).currentUser;
+  final authState = ref.watch(authChangesProvider);
+  final currentUser = authState.valueOrNull;
   return WishlistController(
     wishlistRepository: wishlistRepository,
     userId: currentUser?.uid,

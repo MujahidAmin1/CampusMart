@@ -4,6 +4,7 @@ import 'package:campusmart/features/bottomNavBar/listings/controller/listing_con
 import 'package:campusmart/features/bottomNavBar/listings/view/create_prod_screen.dart';
 import 'package:campusmart/features/bottomNavBar/listings/view/detailed_screen.dart';
 import 'package:campusmart/features/bottomNavBar/listings/widget/category_chips.dart';
+import 'package:campusmart/features/bottomNavBar/listings/widget/filter_modal.dart';
 import 'package:campusmart/features/bottomNavBar/listings/widget/product_display.dart';
 import 'package:campusmart/models/product.dart';
 import 'package:flutter/material.dart';
@@ -122,45 +123,7 @@ class ListingsScreen extends ConsumerWidget {
                           borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
                         ),
                         builder: (context) {
-                          return Container(
-                            padding: EdgeInsets.all(20),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      'Filters',
-                                      style: TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.bold,
-                                        color: Color(0xff3A2770),
-                                      ),
-                                    ),
-                                    IconButton(
-                                      onPressed: () => Navigator.pop(context),
-                                      icon: Icon(Icons.close),
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(height: 16),
-                                Text(
-                                  'Price Range',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w600,
-                                    color: Color(0xff3A2770),
-                                  ),
-                                ),
-                                SizedBox(height: 12),
-                                // Add your filter widgets here
-                                Text('Filter options coming soon...'),
-                                SizedBox(height: 20),
-                              ],
-                            ),
-                          );
+                          return const FilterModal();
                         },
                       );
                     },

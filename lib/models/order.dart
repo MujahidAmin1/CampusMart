@@ -16,7 +16,7 @@ enum OrderStatus {
   processing,
   paid,
   shipped,
-  recieved,
+  collected,
   cancelled,
   completed,
 }
@@ -24,6 +24,7 @@ enum OrderStatus {
 class Order {
   final String orderId;
   final String buyerId;
+  final String sellerId;
   final double amount;
   final OrderStatus status; // pending, shipped, Recieved, etc.
   final DateTime orderDate;
@@ -36,7 +37,7 @@ class Order {
   Order({
     required this.orderId,
     required this.buyerId,
-    // required this.items,
+    required this.sellerId,
     required this.amount,
     required this.status,
     required this.orderDate,
@@ -49,7 +50,7 @@ class Order {
   Order copyWith({
     String? orderId,
     String? buyerId,
-    // List<CartItem>? items,
+    String? sellerId,
     double? totalAmount,
     OrderStatus? status,
     DateTime? orderDate,
@@ -63,6 +64,7 @@ class Order {
       orderId: orderId ?? this.orderId,
       buyerId: buyerId ?? this.buyerId,
       amount: amount ?? this.amount,
+      sellerId: sellerId ?? this.sellerId,
       status: status ?? this.status,
       orderDate: orderDate ?? this.orderDate,
       deliveryAddress: deliveryAddress ?? this.deliveryAddress,
@@ -76,6 +78,7 @@ class Order {
     return Order(
       orderId: map['orderId'],
       buyerId: map['buyerId'],
+      sellerId: map['sellerId'],
       amount: (map['amount'] as num).toDouble(),
       status: orderStatusFromString(map['status']),
       orderDate: (map['orderDate'] as Timestamp).toDate(),
@@ -94,6 +97,7 @@ class Order {
       'orderId': orderId,
       'buyerId': buyerId,
       'totalAmount': amount,
+      'sellerId': sellerId,
       'status': orderStatusToString(status),
       'orderDate': Timestamp.fromDate(orderDate),
       'deliveryAddress': deliveryAddress,

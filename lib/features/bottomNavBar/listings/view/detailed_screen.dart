@@ -5,6 +5,7 @@ import 'package:campusmart/features/auth/controller/auth_controller.dart';
 import 'package:campusmart/features/bottomNavBar/listings/controller/listing_contr.dart';
 import 'package:campusmart/features/bottomNavBar/listings/view/owner_profile_lists.dart';
 import 'package:campusmart/features/bottomNavBar/wishlist/controller/wishlist_contr.dart';
+import 'package:campusmart/features/payment/view/payment_screen.dart';
 import 'package:campusmart/models/product.dart';
 import 'package:campusmart/models/wishlist.dart';
 import 'package:flutter/material.dart';
@@ -389,7 +390,9 @@ class _ProductDetailedScreenState extends ConsumerState<ProductDetailedScreen> {
                     ],
                   ),
                   child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      context.push(PaymentScreen(product: widget.product));
+                    },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.transparent,
                       shadowColor: Colors.transparent,

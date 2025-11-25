@@ -6,17 +6,17 @@ import 'package:cloud_firestore/cloud_firestore.dart' hide Order;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-final orderProvider = Provider<OrderRepo>((ref) {
-  return OrderRepo(
+final orderProvider = Provider<OrderRepository>((ref) {
+  return OrderRepository(
     firebaseAuth: ref.watch(firebaseAuthProvider),
     firebaseFirestore: ref.watch(firestoreProvider),
   );
 });
 
-class OrderRepo {
+class OrderRepository {
   FirebaseFirestore firebaseFirestore;
   FirebaseAuth firebaseAuth;
-  OrderRepo({required this.firebaseAuth, required this.firebaseFirestore});
+  OrderRepository({required this.firebaseAuth, required this.firebaseFirestore});
 
   Future<void> createOrder(Order order) async {
     try {
