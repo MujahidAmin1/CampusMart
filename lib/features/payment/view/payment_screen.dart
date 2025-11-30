@@ -22,12 +22,17 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
   void _processPayment() async {
     var order = Order(
       orderId: Uuid().v4(),
+      productId: widget.product.productId,
       buyerId: ref.read(firebaseAuthProvider).currentUser!.uid,
       sellerId: widget.product.ownerId,
       amount: widget.product.price,
       status: OrderStatus.paid,
       orderDate: DateTime.now(),
       deliveryAddress: "deliveryAddress",
+      isShippingConfirmed: false,
+      hasCollectedItem: false,
+      recievedAt: null,
+
     );
     await ref.read(orderProvider).createOrder(order);
     setState(() {

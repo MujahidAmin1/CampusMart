@@ -3,9 +3,10 @@ import 'package:campusmart/models/product.dart';
 import 'package:campusmart/models/user.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-final profileContProvider = FutureProvider.family<User, String>((ref, userId) async {
-  final profileRepo = ref.watch(profileProvider);
-  return await profileRepo.fetchUserById(userId);
+final profileContProvider = Provider((ref) async {
+  return ProfileController(
+    profileRepository: ref.watch(profileProvider),
+  );
 });
 
 final myListingsProvider = FutureProvider<List<Product>>((ref) async {
@@ -13,6 +14,34 @@ final myListingsProvider = FutureProvider<List<Product>>((ref) async {
   final profileRepo = ref.watch(profileProvider);
   return await profileRepo.getProductsListedByMe();
 });
+
+
+final userByIdProvider = FutureProvider.family<User, String>((ref, userId) async {
+  final repo = ref.watch(profileProvider);
+  return await repo.fetchUserById(userId);
+});
+
+// Provider to fetch products listed by current user
+final myListedProductsProvider = FutureProvider<List<Product>>((ref) async {
+  final repo = ref.watch(profileProvider);
+  return await repo.getProductsListedByMe();
+});
+
+// StreamProvider for items paid for by user
+final itemsPaidForProvider = StreamProvider.family<List<Product>, String>((ref, uid) {
+  final repo = ref.watch(profileProvider);
+  return repo.itemsPaidFor(uid);
+});
+
+
+
+final profileControllerProvider = StateNotifierProvider<ProfileController, AsyncValue<User?>>((ref) {
+  return ProfileController(
+    profileRepository: ref.watch(profileProvider),
+  );
+});
+
+
 
 class ProfileController extends StateNotifier<AsyncValue<User>> {
   final ProfileRepository profileRepository;
@@ -33,5 +62,8 @@ class ProfileController extends StateNotifier<AsyncValue<User>> {
   }
   Future<List<Product>> getProductsListedByMe()async{
     return await profileRepository.getProductsListedByMe();
+  }
+  Stream<List<Product>> itemsPaidFor(String uid){
+    return profileRepository.itemsPaidFor(uid);
   }
 }

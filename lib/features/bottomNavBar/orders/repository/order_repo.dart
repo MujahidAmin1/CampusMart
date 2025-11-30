@@ -29,16 +29,60 @@ class OrderRepository {
       throw (e.toString());
     }
   }
-  Stream<List<Order>> fetchUserOrders(String userId) {
-  return firebaseFirestore
-      .collection('orders')
-      .where('buyerId', isEqualTo: userId)
-      .orderBy('createdAt', descending: true)
-      .snapshots()
-      .map((snapshot) => snapshot.docs
-          .map((doc) => Order.fromMap(doc.data()))
-          .toList());
-}
 
+  Stream<List<Order>> fetchUserOrders(String userId) {
+    try {
+      log('Fetching orders for userId: $userId');
+      return firebaseFirestore
+          .collection('orders')
+          .where('buyerId', isEqualTo: userId)
+          .orderBy('orderDate', descending: true)
+          .snapshots()
+          .handleError((error) {
+            log('Error in fetchUserOrders stream: $error');
+            throw error;
+          })
+          .map((snapshot) {
+            log('Received ${snapshot.docs.length} orders');
+            return snapshot.docs
+                .map((doc) {
+                  try {
+                    return Order.fromMap(doc.data());
+                  } catch (e) {
+                    log('Error parsing order ${doc.id}: $e');
+                    rethrow;
+                  }
+                })
+                .toList();
+          });
+    } catch (e) {
+      log('Error setting up fetchUserOrders: $e');
+      rethrow;
+    }
+  }
+
+  Stream<Order?> fetchOrderById(String orderId) {
+    return firebaseFirestore
+        .collection('orders')
+        .doc(orderId)
+        .snapshots()
+        .map((snapshot) {
+      if (snapshot.exists) {
+        return Order.fromMap(snapshot.data()!);
+      }
+      return null;
+    });
+  }
+
+  Future<void> updateOrderStatus(String orderId, OrderStatus newStatus) async {
+    try {
+      await firebaseFirestore.collection('orders').doc(orderId).update({
+        'status': orderStatusToString(newStatus),
+      });
+    } on FirebaseException catch (e) {
+      log(e.toString());
+      throw (e.toString());
+    }
+  }
 
 }

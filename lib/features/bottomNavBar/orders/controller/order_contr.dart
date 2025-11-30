@@ -14,6 +14,11 @@ final ordersProvider = StreamProvider.autoDispose<List<Order>>((ref) {
   return repo.fetchUserOrders(userId);
 });
 
+final orderByIdProvider = StreamProvider.autoDispose.family<Order?, String>((ref, orderId) {
+  final repo = ref.watch(orderProvider);
+  return repo.fetchOrderById(orderId);
+});
+
 class OrderController extends StateNotifier<AsyncValue<List<Order>>> {
   final OrderRepository orderRepo;
   final Ref ref;

@@ -127,4 +127,22 @@ class ProductListRepository {
       throw Exception('Failed to fetch owner products');
     }
   }
+
+  Future<Product?> fetchProductById(String productId) async {
+    try {
+      final productDoc = await firebaseFirestore
+          .collection('products')
+          .doc(productId)
+          .get();
+      
+      if (!productDoc.exists) {
+        return null;
+      }
+      
+      return Product.fromMap(productDoc.data()!);
+    } catch (e) {
+      log('Error fetching product by ID: $e');
+      throw Exception('Failed to fetch product');
+    }
+  }
 }

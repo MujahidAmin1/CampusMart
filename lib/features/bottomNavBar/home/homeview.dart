@@ -1,7 +1,7 @@
 import 'package:campusmart/features/bottomNavBar/listings/view/listing_screen.dart';
 import 'package:campusmart/features/bottomNavBar/navbar_controller..dart';
 import 'package:campusmart/features/bottomNavBar/orders/view/order_screen.dart';
-import 'package:campusmart/features/bottomNavBar/profile/view/profile.dart';
+import 'package:campusmart/features/bottomNavBar/profile/view/profile_screen.dart';
 import 'package:campusmart/features/bottomNavBar/wishlist/wishlist_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';

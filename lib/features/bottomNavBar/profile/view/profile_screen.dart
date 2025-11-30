@@ -5,6 +5,7 @@ import 'package:campusmart/core/utils/my_colors.dart';
 import 'package:campusmart/features/auth/controller/auth_controller.dart';
 import 'package:campusmart/features/bottomNavBar/profile/controller/profie_contr.dart';
 import 'package:campusmart/features/bottomNavBar/profile/view/myListings.dart';
+import 'package:campusmart/features/bottomNavBar/profile/view/notifcations.dart';
 import 'package:campusmart/features/bottomNavBar/profile/widget/customW.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -15,7 +16,7 @@ class ProfileScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final currentUser = ref.read(firebaseAuthProvider).currentUser;
-    final userstate = ref.watch(profileContProvider(currentUser!.uid));
+    final userstate = ref.watch(userByIdProvider(currentUser!.uid));
     
     return Scaffold(
       backgroundColor: Colors.grey.shade50,
@@ -206,7 +207,7 @@ class ProfileScreen extends ConsumerWidget {
                       Icons.notifications_outlined,
                       'Notifications',
                       () {
-                        // Navigate to notifications settings
+                        context.push(NotificationScreen());
                       },
                     ),
                     Divider(height: 1, indent: 60, endIndent: 16),
@@ -339,7 +340,7 @@ class ProfileScreen extends ConsumerWidget {
                   SizedBox(height: 24),
                   ElevatedButton.icon(
                     onPressed: () {
-                      ref.invalidate(profileContProvider);
+                      ref.invalidate(userByIdProvider);
                     },
                     icon: Icon(Icons.refresh),
                     label: Text('Try Again'),

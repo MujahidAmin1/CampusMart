@@ -23,6 +23,7 @@ enum OrderStatus {
 
 class Order {
   final String orderId;
+  final String productId;
   final String buyerId;
   final String sellerId;
   final double amount;
@@ -36,6 +37,7 @@ class Order {
 
   Order({
     required this.orderId,
+    required this.productId,
     required this.buyerId,
     required this.sellerId,
     required this.amount,
@@ -49,6 +51,7 @@ class Order {
   });
   Order copyWith({
     String? orderId,
+    String? productId,
     String? buyerId,
     String? sellerId,
     double? totalAmount,
@@ -62,6 +65,7 @@ class Order {
   }) {
     return Order(
       orderId: orderId ?? this.orderId,
+      productId: productId ?? this.productId,
       buyerId: buyerId ?? this.buyerId,
       amount: amount ?? this.amount,
       sellerId: sellerId ?? this.sellerId,
@@ -76,13 +80,16 @@ class Order {
 
   factory Order.fromMap(Map<String, dynamic> map) {
     return Order(
-      orderId: map['orderId'],
-      buyerId: map['buyerId'],
-      sellerId: map['sellerId'],
-      amount: (map['amount'] as num).toDouble(),
-      status: orderStatusFromString(map['status']),
-      orderDate: (map['orderDate'] as Timestamp).toDate(),
-      deliveryAddress: map['deliveryAddress'],
+      orderId: map['orderId'] ?? '',
+      productId: map['productId'] ?? '',
+      buyerId: map['buyerId'] ?? '',
+      sellerId: map['sellerId'] ?? '',
+      amount: (map['amount'] as num?)?.toDouble() ?? 0.0,
+      status: orderStatusFromString(map['status'] ?? 'pending'),
+      orderDate: map['orderDate'] != null 
+          ? (map['orderDate'] as Timestamp).toDate()
+          : DateTime.now(),
+      deliveryAddress: map['deliveryAddress'] ?? '',
       paymentId: map['paymentId'],
       isShippingConfirmed: map['isShippingConfirmed'] ?? false,
       hasCollectedItem: map['hasCollectedItem'] ?? false,
@@ -95,13 +102,15 @@ class Order {
   Map<String, dynamic> toMap() {
     return {
       'orderId': orderId,
+      'productId': productId,
       'buyerId': buyerId,
-      'totalAmount': amount,
+      'amount': amount,
       'sellerId': sellerId,
       'status': orderStatusToString(status),
       'orderDate': Timestamp.fromDate(orderDate),
       'deliveryAddress': deliveryAddress,
       'paymentId': paymentId,
+      'isShippingConfirmed': isShippingConfirmed,
       'hasCollectedItem': hasCollectedItem,
       'recievedAt':
           recievedAt != null ? Timestamp.fromDate(recievedAt!) : null,
