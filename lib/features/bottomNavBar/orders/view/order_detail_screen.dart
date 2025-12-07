@@ -521,7 +521,7 @@ class OrderDetailScreen extends ConsumerWidget {
   }
 }
 
-// Provider to fetch a single product by ID (reused from order_screen.dart)
+// Provider to fetch a single product by ID
 final productByIdProvider = FutureProvider.family<Product?, String>((ref, productId) async {
   final repo = ref.watch(productRepositoryProvider);
   return await repo.fetchProductById(productId);

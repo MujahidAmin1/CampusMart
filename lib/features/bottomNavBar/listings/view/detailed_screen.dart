@@ -4,14 +4,11 @@ import 'package:campusmart/core/utils/ktextstyle.dart';
 import 'package:campusmart/features/auth/controller/auth_controller.dart';
 import 'package:campusmart/features/bottomNavBar/listings/controller/listing_contr.dart';
 import 'package:campusmart/features/bottomNavBar/listings/view/owner_profile_lists.dart';
-import 'package:campusmart/features/bottomNavBar/wishlist/controller/wishlist_contr.dart';
 import 'package:campusmart/features/payment/view/payment_screen.dart';
 import 'package:campusmart/models/product.dart';
-import 'package:campusmart/models/wishlist.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
-import 'package:uuid/uuid.dart';
 
 class ProductDetailedScreen extends ConsumerStatefulWidget {
   final bool looped;
@@ -29,10 +26,7 @@ class _ProductDetailedScreenState extends ConsumerState<ProductDetailedScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final wishlistState = ref.watch(wishlistControllerProvider);
-    final wishlistController = ref.read(wishlistControllerProvider.notifier);
     final authuser = ref.read(firebaseAuthProvider).currentUser;
-    final isInWishlist = wishlistController.isInWishlist(widget.product.productId);
     final productOwner = ref.watch(productOwnerProvider(widget.product.ownerId));
     double height = MediaQuery.of(context).size.height;
     return Scaffold(
@@ -128,12 +122,7 @@ class _ProductDetailedScreenState extends ConsumerState<ProductDetailedScreen> {
                           padding:
                               EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                           decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              colors: [
-                                Color(0xff8E6CEF).withOpacity(0.15),
-                                Color(0xff6CEFBD).withOpacity(0.15),
-                              ],
-                            ),
+                            color: Color(0xff8E6CEF).withOpacity(0.15),
                             borderRadius: BorderRadius.circular(8),
                             border: Border.all(
                               color: Color(0xff8E6CEF).withOpacity(0.3),
@@ -163,12 +152,7 @@ class _ProductDetailedScreenState extends ConsumerState<ProductDetailedScreen> {
                         Container(
                           padding: EdgeInsets.all(16),
                           decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              colors: [
-                                Color(0xffEFC66C).withOpacity(0.1),
-                                Color(0xffEFC66C).withOpacity(0.05),
-                              ],
-                            ),
+                            color: Color(0xffEFC66C).withOpacity(0.1),
                             borderRadius: BorderRadius.circular(12),
                             border: Border.all(
                               color: Color(0xffEFC66C).withOpacity(0.3),
@@ -296,62 +280,7 @@ class _ProductDetailedScreenState extends ConsumerState<ProductDetailedScreen> {
             ),
           ),
 
-          // Favorite Button
-          Positioned(
-            top: MediaQuery.of(context).padding.top + 8,
-            right: 16,
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.9),
-                shape: BoxShape.circle,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.1),
-                    blurRadius: 8,
-                  ),
-                ],
-              ),
-              child: wishlistState.when(
-                data: (_) => IconButton(
-                  onPressed: () async {
-                    if (authuser == null) return;
-                    
-                    final item = Wishlist(
-                      productTitle: widget.product.title,
-                      userId: authuser.uid,
-                      productId: widget.product.productId,
-                      sellerId: widget.product.ownerId,
-                      wishlistId: Uuid().v4(),
-                      price: widget.product.price,
-                      addedAt: DateTime.now(),
-                    );
-                    
-                    try {
-                      await wishlistController.toggleWishlist(item);
-                    } catch (e) {
-                      if (mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('Error: ${e.toString()}')),
-                        );
-                      }
-                    }
-                  },
-                  icon: Icon(
-                    Iconsax.heart,
-                    color: isInWishlist ? Color(0xff8E6CEF) : Colors.grey,
-                  ),
-                ),
-                loading: () => IconButton(
-                  onPressed: null,
-                  icon: Icon(Iconsax.heart, color: Colors.grey),
-                ),
-                error: (_, __) => IconButton(
-                  onPressed: null,
-                  icon: Icon(Iconsax.heart, color: Colors.grey),
-                ),
-              ),
-            ),
-          ),
+
 
           // Order Button (Fixed at bottom)
           if (!widget.looped)
@@ -374,12 +303,7 @@ class _ProductDetailedScreenState extends ConsumerState<ProductDetailedScreen> {
                 child: Container(
                   width: double.infinity,
                   decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [
-                        Color(0xff8E6CEF),
-                        Color(0xff6CEFBD),
-                      ],
-                    ),
+                    color: Color(0xff8E6CEF),
                     borderRadius: BorderRadius.circular(12),
                     boxShadow: [
                       BoxShadow(

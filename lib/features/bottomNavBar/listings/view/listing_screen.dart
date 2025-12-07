@@ -1,4 +1,4 @@
-import 'package:campusmart/core/utils/extensions.dart';
+﻿import 'package:campusmart/core/utils/extensions.dart';
 import 'package:campusmart/core/utils/ktextstyle.dart';
 import 'package:campusmart/features/bottomNavBar/listings/controller/listing_contr.dart';
 import 'package:campusmart/features/bottomNavBar/listings/view/create_prod_screen.dart';
@@ -30,9 +30,7 @@ class ListingsScreen extends ConsumerWidget {
             Container(
               padding: EdgeInsets.all(8),
               decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [Color(0xff8E6CEF), Color(0xff6CEFBD)],
-                ),
+                color: Color(0xff8E6CEF),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Icon(Icons.shopping_bag, color: Colors.white, size: 20),
@@ -203,9 +201,7 @@ class ListingsScreen extends ConsumerWidget {
                       Container(
                         padding: EdgeInsets.all(20),
                         decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [Color(0xff8E6CEF), Color(0xff6CEFBD)],
-                          ),
+                          color: Color(0xff8E6CEF),
                           shape: BoxShape.circle,
                         ),
                         child: SpinKitSpinningLines(
@@ -260,11 +256,7 @@ class ListingsScreen extends ConsumerWidget {
       ),
       floatingActionButton: Container(
         decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Color(0xff8E6CEF), Color(0xff6CEFBD)],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
+          color: Color(0xff8E6CEF),
           shape: BoxShape.circle,
           boxShadow: [
             BoxShadow(

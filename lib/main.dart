@@ -1,4 +1,6 @@
 
+import 'dart:developer';
+
 import 'package:campusmart/core/providers.dart';
 import 'package:campusmart/features/auth/view/authscreen.dart';
 import 'package:campusmart/features/bottomNavBar/home/homeview.dart';
@@ -7,6 +9,9 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+
+import 'package:campusmart/core/services/notification_service.dart';
+import 'package:campusmart/features/bottomNavBar/notification/view/notification_listener_wrapper.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -26,16 +31,18 @@ class MainApp extends ConsumerWidget{
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-   var currentUser = ref.watch(authChangesProvider); // Use this instead
-return MaterialApp(
-  home: currentUser.when(
-    data: (firebaseUser) => firebaseUser != null ? BottomBarC() : AuthScreen(), 
-    error: (_, __) => AuthScreen(), 
-    loading: () => Scaffold(
-      body: Center(
-        child: SpinKitSpinningLines(color: Colors.black)
-      )
-    ),
-  ),);
+   var currentUser = ref.watch(authChangesProvider);
+return NotificationListenerWrapper(
+  child: MaterialApp(
+    home: currentUser.when(
+      data: (firebaseUser) => firebaseUser != null ? BottomBarC() : AuthScreen(), 
+      error: (_, __) => AuthScreen(), 
+      loading: () => Scaffold(
+        body: Center(
+          child: SpinKitSpinningLines(color: Colors.black)
+        )
+      ),
+    ),),
+);
   }
 }

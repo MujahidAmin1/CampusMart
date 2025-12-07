@@ -1,11 +1,8 @@
-import 'package:campusmart/core/providers.dart';
+﻿import 'package:campusmart/core/providers.dart';
 import 'package:campusmart/core/utils/extensions.dart';
-import 'package:campusmart/core/utils/ktextstyle.dart';
-import 'package:campusmart/core/utils/my_colors.dart';
 import 'package:campusmart/features/auth/controller/auth_controller.dart';
 import 'package:campusmart/features/bottomNavBar/profile/controller/profie_contr.dart';
 import 'package:campusmart/features/bottomNavBar/profile/view/myListings.dart';
-import 'package:campusmart/features/bottomNavBar/profile/view/notifcations.dart';
 import 'package:campusmart/features/bottomNavBar/profile/widget/customW.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -42,11 +39,7 @@ class ProfileScreen extends ConsumerWidget {
               Container(
                 padding: EdgeInsets.all(24),
                 decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [Color(0xff8E6CEF), Color(0xff6CEFBD)],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
+                  color: Color(0xff8E6CEF),
                   borderRadius: BorderRadius.circular(20),
                   boxShadow: [
                     BoxShadow(
@@ -201,14 +194,6 @@ class ProfileScreen extends ConsumerWidget {
                           color: Color(0xff3A2770),
                         ),
                       ),
-                    ),
-                    buildMenuItem(
-                      context,
-                      Icons.notifications_outlined,
-                      'Notifications',
-                      () {
-                        context.push(NotificationScreen());
-                      },
                     ),
                     Divider(height: 1, indent: 60, endIndent: 16),
                     buildMenuItem(
@@ -367,11 +352,7 @@ class ProfileScreen extends ConsumerWidget {
                   width: 80,
                   height: 80,
                   decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [Color(0xff8E6CEF), Color(0xff6CEFBD)],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
+                    color: Color(0xff8E6CEF),
                     shape: BoxShape.circle,
                   ),
                   child: Padding(

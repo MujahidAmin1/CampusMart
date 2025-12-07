@@ -1,4 +1,4 @@
-import 'package:campusmart/core/utils/my_colors.dart';
+﻿import 'package:campusmart/core/utils/my_colors.dart';
 import 'package:campusmart/features/auth/controller/auth_controller.dart';
 import 'package:campusmart/features/auth/widget/submitBtn.dart';
 import 'package:flutter/material.dart';
@@ -33,15 +33,7 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              Color(0xff6CEFBD).withOpacity(0.15),
-              Colors.white,
-              Color(0xff8E6CEF).withOpacity(0.1),
-            ],
-          ),
+          color: Colors.grey.shade50,
         ),
         child: SafeArea(
           child: SingleChildScrollView(
@@ -58,11 +50,7 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
                       child: Container(
                         padding: EdgeInsets.all(15),
                         decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [Color(0xff8E6CEF), Color(0xff6CEFBD)],
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                          ),
+                          color: Color(0xff8E6CEF),
                           shape: BoxShape.circle,
                           boxShadow: [
                             BoxShadow(

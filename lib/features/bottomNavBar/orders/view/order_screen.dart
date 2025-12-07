@@ -1,3 +1,4 @@
+import 'package:campusmart/core/utils/extensions.dart';
 import 'package:campusmart/core/utils/my_colors.dart';
 import 'package:campusmart/features/bottomNavBar/listings/repository/listing_repo.dart';
 import 'package:campusmart/features/bottomNavBar/orders/controller/order_contr.dart';
@@ -59,14 +60,7 @@ class OrderScreen extends ConsumerWidget {
                       order: order,
                       product: product,
                       onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => OrderDetailScreen(
-                              orderId: order.orderId,
-                            ),
-                          ),
-                        );
+                        context.push(OrderDetailScreen(orderId: order.orderId));
                       },
                     );
                   },

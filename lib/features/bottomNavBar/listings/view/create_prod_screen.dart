@@ -1,4 +1,4 @@
-import 'dart:io';
+﻿import 'dart:io';
 
 import 'package:another_flushbar/flushbar.dart';
 import 'package:campusmart/core/utils/extensions.dart';
@@ -182,14 +182,7 @@ class _CreateProdScreenState extends ConsumerState<CreateProdScreen> {
                                 width: width,
                                 height: height * 0.2,
                                 decoration: BoxDecoration(
-                                  gradient: LinearGradient(
-                                    colors: [
-                                      Color(0xff8E6CEF).withOpacity(0.05),
-                                      Color(0xff6CEFBD).withOpacity(0.05),
-                                    ],
-                                    begin: Alignment.topLeft,
-                                    end: Alignment.bottomRight,
-                                  ),
+                                  color: Color(0xff8E6CEF).withOpacity(0.05),
                                   borderRadius: BorderRadius.circular(12),
                                   border: Border.all(
                                     color: Color(0xff8E6CEF).withOpacity(0.3),
@@ -254,12 +247,7 @@ class _CreateProdScreenState extends ConsumerState<CreateProdScreen> {
                                             }),
                                             child: Container(
                                               decoration: BoxDecoration(
-                                                gradient: LinearGradient(
-                                                  colors: [
-                                                    Colors.red.shade400,
-                                                    Colors.red.shade600,
-                                                  ],
-                                                ),
+                                                color: Colors.red.shade500,
                                                 shape: BoxShape.circle,
                                                 boxShadow: [
                                                   BoxShadow(
@@ -425,14 +413,7 @@ class _CreateProdScreenState extends ConsumerState<CreateProdScreen> {
                 Container(
                   width: double.infinity,
                   decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [
-                        Color(0xff8E6CEF),
-                        Color(0xff6CEFBD),
-                      ],
-                      begin: Alignment.centerLeft,
-                      end: Alignment.centerRight,
-                    ),
+                    color: Color(0xff8E6CEF),
                     borderRadius: BorderRadius.circular(16),
                     boxShadow: [
                       BoxShadow(

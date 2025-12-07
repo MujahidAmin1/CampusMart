@@ -61,14 +61,38 @@ class OrderRepository {
     }
   }
 
-  Stream<Order?> fetchOrderById(String orderId) {
+  Stream<List<Order>> fetchSellerOrders(String userId) {
+    try {
+      return firebaseFirestore
+          .collection('orders')
+          .where('sellerId', isEqualTo: userId)
+          .orderBy('orderDate', descending: true)
+          .snapshots()
+          .map((snapshot) {
+            return snapshot.docs
+                .map((doc) => Order.fromMap(doc.data()))
+                .toList();
+          });
+    } catch (e) {
+      log('Error setting up fetchSellerOrders: $e');
+      rethrow;
+    }
+  }
+
+  Stream<Order?> fetchOrderById(String orderId, String userId) {
     return firebaseFirestore
         .collection('orders')
         .doc(orderId)
         .snapshots()
         .map((snapshot) {
       if (snapshot.exists) {
-        return Order.fromMap(snapshot.data()!);
+        final order = Order.fromMap(snapshot.data()!);
+        // Authorization check: only buyer or seller can access order details
+        if (order.buyerId == userId || order.sellerId == userId) {
+          return order;
+        }
+        log('Unauthorized access attempt to order $orderId by user $userId');
+        return null;
       }
       return null;
     });

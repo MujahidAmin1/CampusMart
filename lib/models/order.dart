@@ -1,4 +1,4 @@
-
+ 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 
@@ -54,7 +54,7 @@ class Order {
     String? productId,
     String? buyerId,
     String? sellerId,
-    double? totalAmount,
+    double? amount,
     OrderStatus? status,
     DateTime? orderDate,
     String? deliveryAddress,
@@ -74,6 +74,7 @@ class Order {
       deliveryAddress: deliveryAddress ?? this.deliveryAddress,
       paymentId: paymentId ?? this.paymentId,
       hasCollectedItem: hasCollectedItem ?? this.hasCollectedItem,
+      isShippingConfirmed: isShippingConfirmed ?? this.isShippingConfirmed,
       recievedAt: recievedAt ?? this.recievedAt,
     );
   }
