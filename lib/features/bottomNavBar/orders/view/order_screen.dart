@@ -40,7 +40,7 @@ class OrderScreen extends ConsumerWidget {
 
           return RefreshIndicator(
             onRefresh: () async {
-              ref.invalidate(ordersProvider);
+              ref.invalidate(allOrdersProvider);
             },
             color: MyColors.purpleShade,
             child: ListView.builder(
@@ -105,7 +105,7 @@ class OrderScreen extends ConsumerWidget {
               const SizedBox(height: 8),
               TextButton(
                 onPressed: () {
-                  ref.invalidate(ordersProvider);
+                  ref.invalidate(allOrdersProvider);
                 },
                 child: const Text('Retry'),
               ),

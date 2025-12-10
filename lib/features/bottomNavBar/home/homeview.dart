@@ -39,9 +39,9 @@ class BottomBarC extends ConsumerWidget {
             label: 'Home',
           ),
           const NavigationDestination(
-            selectedIcon: Icon(Iconsax.bookmark),
-            icon: Icon(Iconsax.bookmark_copy),
-            label: 'Wishlist',
+            selectedIcon: Icon(Iconsax.notification),
+            icon: Icon(Iconsax.notification_copy),
+            label: 'Notification',
           ),
           const NavigationDestination(
             selectedIcon: Icon(Iconsax.bookmark),

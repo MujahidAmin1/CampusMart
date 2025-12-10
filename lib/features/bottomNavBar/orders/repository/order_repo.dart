@@ -36,24 +36,37 @@ class OrderRepository {
       return firebaseFirestore
           .collection('orders')
           .where('buyerId', isEqualTo: userId)
-          .orderBy('orderDate', descending: true)
+          // Temporarily removed orderBy to avoid composite index requirement
+          // .orderBy('orderDate', descending: true)
           .snapshots()
           .handleError((error) {
             log('Error in fetchUserOrders stream: $error');
+            log('Error type: ${error.runtimeType}');
             throw error;
           })
           .map((snapshot) {
-            log('Received ${snapshot.docs.length} orders');
-            return snapshot.docs
+            log('Received ${snapshot.docs.length} orders for buyer $userId');
+            if (snapshot.docs.isEmpty) {
+              log('No orders found. Check if orders exist in Firestore with buyerId: $userId');
+            }
+            final orders = snapshot.docs
                 .map((doc) {
                   try {
-                    return Order.fromMap(doc.data());
+                    log('Processing order doc: ${doc.id}');
+                    final data = doc.data();
+                    log('Order data: $data');
+                    return Order.fromMap(data);
                   } catch (e) {
                     log('Error parsing order ${doc.id}: $e');
                     rethrow;
                   }
                 })
                 .toList();
+            
+            // Sort in memory instead of using Firestore orderBy
+            orders.sort((a, b) => b.orderDate.compareTo(a.orderDate));
+            
+            return orders;
           });
     } catch (e) {
       log('Error setting up fetchUserOrders: $e');
@@ -63,15 +76,39 @@ class OrderRepository {
 
   Stream<List<Order>> fetchSellerOrders(String userId) {
     try {
+      log('Fetching orders for sellerId: $userId');
       return firebaseFirestore
           .collection('orders')
           .where('sellerId', isEqualTo: userId)
-          .orderBy('orderDate', descending: true)
+          // Temporarily removed orderBy to avoid composite index requirement
+          // .orderBy('orderDate', descending: true)
           .snapshots()
+          .handleError((error) {
+            log('Error in fetchSellerOrders stream: $error');
+            log('Error type: ${error.runtimeType}');
+            throw error;
+          })
           .map((snapshot) {
-            return snapshot.docs
-                .map((doc) => Order.fromMap(doc.data()))
+            log('Received ${snapshot.docs.length} orders for seller $userId');
+            if (snapshot.docs.isEmpty) {
+              log('No orders found. Check if orders exist in Firestore with sellerId: $userId');
+            }
+            final orders = snapshot.docs
+                .map((doc) {
+                  try {
+                    log('Processing seller order doc: ${doc.id}');
+                    return Order.fromMap(doc.data());
+                  } catch (e) {
+                    log('Error parsing seller order ${doc.id}: $e');
+                    rethrow;
+                  }
+                })
                 .toList();
+            
+            // Sort in memory instead of using Firestore orderBy
+            orders.sort((a, b) => b.orderDate.compareTo(a.orderDate));
+            
+            return orders;
           });
     } catch (e) {
       log('Error setting up fetchSellerOrders: $e');

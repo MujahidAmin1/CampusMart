@@ -1,4 +1,5 @@
 import 'package:campusmart/core/utils/ktextstyle.dart';
+import 'package:campusmart/core/utils/my_colors.dart';
 import 'package:campusmart/core/utils/price_format.dart';
 import 'package:campusmart/features/bottomNavBar/profile/controller/profie_contr.dart';
 import 'package:flutter/material.dart';
@@ -96,7 +97,7 @@ class MyListedItemsScreen extends ConsumerWidget {
                     ClipRRect(
                       borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
                       child: Container(
-                        height: 120,
+                        height: 109,
                         width: double.infinity,
                         color: Colors.grey.shade200,
                         child: product.imageUrls.isNotEmpty
@@ -149,25 +150,30 @@ class MyListedItemsScreen extends ConsumerWidget {
                             ),
                           ),
                           SizedBox(height: 4),
-                          Container(
-                            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                            decoration: BoxDecoration(
-                              color: product.isAvailable
-                                  ? Colors.green.shade50
-                                  : Colors.red.shade50,
-                              borderRadius: BorderRadius.circular(6),
-                            ),
-                            child: Text(
-                              product.isAvailable ? 'Available' : 'Sold',
-                              style: kTextStyle(
-                                size: 11,
-                                color: product.isAvailable
-                                    ? Colors.green.shade700
-                                    : Colors.red.shade700,
-                                isBold: false,
-                              ),
+                         Row(
+                          children: [
+                            IconButton(
+                            onPressed: () {
+                              ref.read(deleteProductProvider(product.productId));
+                            },
+                            icon: Icon(
+                              Icons.delete,
+                              size: 20,
+                              color: Color(0xff3A2770)
                             ),
                           ),
+                          IconButton(
+                            onPressed: () {
+                              // Implement edit functionality here
+                            },
+                            icon: Icon(
+                              Iconsax.profile_delete,
+                              size: 20,
+                              color: MyColors.warmGold
+                            ),
+                          ),
+                          ],
+                         )
                         ],
                       ),
                     ),

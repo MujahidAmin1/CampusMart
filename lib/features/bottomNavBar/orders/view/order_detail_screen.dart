@@ -433,7 +433,7 @@ class OrderDetailScreen extends ConsumerWidget {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      order.deliveryAddress,
+                     'Campus pickup shop, opposite tomato sellers, Coke Village',
                       style: const TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w600,

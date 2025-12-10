@@ -18,6 +18,7 @@ dependencies:
   firebase_storage: ^12.4.5
   flutter:
     sdk: flutter
+  flutter_launcher_icons: ^0.14.4
   flutter_local_notifications: ^19.5.0
   flutter_riverpod: ^2.6.1
   flutter_spinkit: ^5.2.1
@@ -35,3 +36,10 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "asset/App_Icon.png"
+  adaptive_icon_background: "#FFFFFF"
+  adaptive_icon_foreground: "asset/App_Icon.png"

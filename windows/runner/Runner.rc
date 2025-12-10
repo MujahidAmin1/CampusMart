@@ -90,12 +90,12 @@ BEGIN
         BLOCK "040904e4"
         BEGIN
             VALUE "CompanyName", "com.example" "\0"
-            VALUE "FileDescription", "shopify1" "\0"
+            VALUE "FileDescription", "Campusmart" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "shopify1" "\0"
+            VALUE "InternalName", "Campusmart" "\0"
             VALUE "LegalCopyright", "Copyright (C) 2025 com.example. All rights reserved." "\0"
-            VALUE "OriginalFilename", "shopify1.exe" "\0"
-            VALUE "ProductName", "shopify1" "\0"
+            VALUE "OriginalFilename", "Campusmart.exe" "\0"
+            VALUE "ProductName", "Campusmart" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

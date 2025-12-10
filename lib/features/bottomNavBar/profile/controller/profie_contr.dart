@@ -33,7 +33,10 @@ final itemsPaidForProvider = StreamProvider.family<List<Product>, String>((ref, 
   return repo.itemsPaidFor(uid);
 });
 
-
+final deleteProductProvider = FutureProvider.family<void, String>((ref, productId) async {
+  final repo = ref.watch(profileProvider);
+  await repo.deleteProduct(productId);
+});
 
 final profileControllerProvider = StateNotifierProvider<ProfileController, AsyncValue<User?>>((ref) {
   return ProfileController(
@@ -65,5 +68,8 @@ class ProfileController extends StateNotifier<AsyncValue<User>> {
   }
   Stream<List<Product>> itemsPaidFor(String uid){
     return profileRepository.itemsPaidFor(uid);
+  }
+  Future deleteProduct(String productId) async {
+    await profileRepository.deleteProduct(productId);
   }
 }

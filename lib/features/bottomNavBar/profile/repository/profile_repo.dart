@@ -81,4 +81,12 @@ class ProfileRepository {
       yield products;
     }
   }
+  Future deleteProduct(String productId) async {
+    try {
+      await firebaseFirestore.collection('products').doc(productId).delete();
+    } catch (e) {
+      log('Error deleting product $productId: $e');
+      throw e;
+    }
+  }
 }

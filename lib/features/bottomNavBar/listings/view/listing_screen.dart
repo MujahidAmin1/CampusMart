@@ -137,61 +137,74 @@ class ListingsScreen extends ConsumerWidget {
               child: filteredProductsAsync.when(
                 data: (products) {
                   if (products.isEmpty) {
-                    return Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Iconsax.shop,
-                            size: 80,
-                            color: Colors.grey.shade300,
-                          ),
-                          SizedBox(height: 16),
-                          Text(
-                            'No Products Available',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w600,
-                              color: Color(0xff3A2770).withOpacity(0.6),
+                    return RefreshIndicator(
+                      onRefresh: () => ref.refresh(allProductsProvider.future),
+                      child: SingleChildScrollView(
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        child: SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.6,
+                          child: Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Iconsax.shop,
+                                  size: 80,
+                                  color: Colors.grey.shade300,
+                                ),
+                                SizedBox(height: 16),
+                                Text(
+                                  'No Products Available',
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w600,
+                                    color: Color(0xff3A2770).withOpacity(0.6),
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
-                        ],
+                        ),
                       ),
                     );
                   }
 
-                  return GridView.builder(
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      crossAxisSpacing: 12,
-                      mainAxisSpacing: 12,
-                      mainAxisExtent: 240,
-                    ),
-                    itemCount: products.length,
-                    itemBuilder: (context, index) {
-                      final currentProduct = products[index];
-                      return GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => ProductDetailedScreen(
-                                product: currentProduct,
-                                looped: false,
+                  return RefreshIndicator(
+                    onRefresh: () => ref.refresh(allProductsProvider.future),
+                    child: GridView.builder(
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        crossAxisSpacing: 12,
+                        mainAxisSpacing: 12,
+                        mainAxisExtent: 240,
+                      ),
+                      itemCount: products.length,
+                      itemBuilder: (context, index) {
+                        final currentProduct = products[index];
+                        return GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ProductDetailedScreen(
+                                  product: currentProduct,
+                                  looped: false,
+                                ),
                               ),
-                            ),
-                          );
-                        },
-                        child: ProductDisplay(
-                          img: currentProduct.imageUrls.isNotEmpty
-                              ? currentProduct.imageUrls[0]
-                              : '',
-                          title: currentProduct.title,
-                          description: currentProduct.description,
-                          price: currentProduct.price,
-                        ),
-                      );
-                    },
+                            );
+                          },
+                          child: ProductDisplay(
+                            img: currentProduct.imageUrls.isNotEmpty
+                                ? currentProduct.imageUrls[0]
+                                : '',
+                            title: currentProduct.title,
+                            description: currentProduct.description,
+                            price: currentProduct.price,
+                          ),
+                        );
+                      },
+                    ),
                   );
                 },
                 loading: () => Center(
@@ -220,33 +233,42 @@ class ListingsScreen extends ConsumerWidget {
                     ],
                   ),
                 ),
-                error: (error, stack) => Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        Icons.error_outline,
-                        size: 60,
-                        color: Colors.red.shade300,
-                      ),
-                      SizedBox(height: 16),
-                      Text(
-                        'Failed to load products',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                          color: Color(0xff3A2770),
+                error: (error, stack) => RefreshIndicator(
+                  onRefresh: () => ref.refresh(allProductsProvider.future),
+                  child: SingleChildScrollView(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    child: SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.6,
+                      child: Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.error_outline,
+                              size: 60,
+                              color: Colors.red.shade300,
+                            ),
+                            SizedBox(height: 16),
+                            Text(
+                              'Failed to load products',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                                color: Color(0xff3A2770),
+                              ),
+                            ),
+                            SizedBox(height: 8),
+                            Text(
+                              'Pull to try again',
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.grey.shade600,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                      SizedBox(height: 8),
-                      Text(
-                        'Please try again later',
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.grey.shade600,
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
                 ),
               ),

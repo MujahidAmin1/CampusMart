@@ -1,3 +1,3 @@
-# shopify1
+# Campusmart
 
 A new Flutter project.

@@ -186,7 +186,7 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
                     child: Column(
                       children: [
                         Text(
-                          'test@campusmart.com',
+                          'payment for ${widget.product.title}',
                           style: TextStyle(
                             color: Colors.grey.shade600,
                             fontSize: 14,
