@@ -81,6 +81,27 @@ class ProfileRepository {
       yield products;
     }
   }
+  
+  Future<void> updateProduct(Product product) async {
+    try {
+      // Update only text fields, keep images unchanged
+      await firebaseFirestore
+          .collection('products')
+          .doc(product.productId)
+          .update({
+            'title': product.title,
+            'description': product.description,
+            'price': product.price,
+            'category': product.category,
+          });
+          
+      log('Product updated successfully: ${product.productId}');
+    } catch (e) {
+      log('Error updating product ${product.productId}: $e');
+      throw e;
+    }
+  }
+  
   Future deleteProduct(String productId) async {
     try {
       await firebaseFirestore.collection('products').doc(productId).delete();

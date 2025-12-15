@@ -69,6 +69,9 @@ class ProfileController extends StateNotifier<AsyncValue<User>> {
   Stream<List<Product>> itemsPaidFor(String uid){
     return profileRepository.itemsPaidFor(uid);
   }
+  Future<void> updateProduct(Product product) async {
+    await profileRepository.updateProduct(product);
+  }
   Future deleteProduct(String productId) async {
     await profileRepository.deleteProduct(productId);
   }
