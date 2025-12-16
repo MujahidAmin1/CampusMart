@@ -6,6 +6,7 @@ import 'package:campusmart/features/bottomNavBar/listings/view/detailed_screen.d
 import 'package:campusmart/features/bottomNavBar/listings/widget/category_chips.dart';
 import 'package:campusmart/features/bottomNavBar/listings/widget/filter_modal.dart';
 import 'package:campusmart/features/bottomNavBar/listings/widget/product_display.dart';
+import 'package:campusmart/features/search/search_screen.dart';
 import 'package:campusmart/models/product.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -54,27 +55,34 @@ class ListingsScreen extends ConsumerWidget {
           children: [
             SizedBox(height: 16),
             // Search Bar
-            TextField(
-              decoration: InputDecoration(
-                prefixIcon: Icon(Iconsax.search_favorite, color: Color(0xff8E6CEF)),
-                hintText: "Search products...",
-                hintStyle: TextStyle(color: Colors.grey.shade400),
-                filled: true,
-                fillColor: Colors.white,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(16),
-                  borderSide: BorderSide.none,
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(16),
-                  borderSide: BorderSide(color: Colors.grey.shade200),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(16),
-                  borderSide: BorderSide(color: Color(0xff8E6CEF), width: 2),
+            GestureDetector(
+              onTap: () {
+                context.push(SearchScreen());
+              },
+              child: AbsorbPointer(
+                child: TextField(
+                  decoration: InputDecoration(
+                    prefixIcon: Icon(
+                      Iconsax.search_favorite,
+                      color: Color(0xff8E6CEF),
+                    ),
+                    hintText: "Search products...",
+                    hintStyle: TextStyle(color: Colors.grey.shade400),
+                    filled: true,
+                    fillColor: Colors.white,
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(16),
+                      borderSide: BorderSide(color: Colors.grey.shade200),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(16),
+                      borderSide: BorderSide(color: Color(0xff8E6CEF), width: 2),
+                    ),
+                  ),
                 ),
               ),
             ),
+
             SizedBox(height: 20),
             
             // Categories Header
