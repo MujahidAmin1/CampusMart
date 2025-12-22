@@ -2,6 +2,7 @@
 import 'package:campusmart/core/utils/extensions.dart';
 import 'package:campusmart/features/auth/controller/auth_controller.dart';
 import 'package:campusmart/features/bottomNavBar/profile/controller/profie_contr.dart';
+import 'package:campusmart/features/bottomNavBar/profile/view/edit_profile_screen.dart';
 import 'package:campusmart/features/bottomNavBar/profile/view/myListings.dart';
 import 'package:campusmart/features/bottomNavBar/profile/widget/customW.dart';
 import 'package:flutter/material.dart';
@@ -60,14 +61,19 @@ class ProfileScreen extends ConsumerWidget {
                       child: CircleAvatar(
                         radius: 50,
                         backgroundColor: Colors.white,
-                        child: Text(
-                          user.username[0].toUpperCase(),
-                          style: TextStyle(
-                            fontSize: 40,
-                            fontWeight: FontWeight.bold,
-                            color: Color(0xff8E6CEF),
-                          ),
-                        ),
+                        backgroundImage: (user.profilePic ?? '').isNotEmpty 
+                            ? NetworkImage(user.profilePic!) 
+                            : null,
+                        child: (user.profilePic ?? '').isEmpty
+                            ? Text(
+                                user.username[0].toUpperCase(),
+                                style: TextStyle(
+                                  fontSize: 40,
+                                  fontWeight: FontWeight.bold,
+                                  color: Color(0xff8E6CEF),
+                                ),
+                              )
+                            : null,
                       ),
                     ),
                     SizedBox(height: 16),
@@ -141,7 +147,7 @@ class ProfileScreen extends ConsumerWidget {
                       Icons.edit_outlined,
                       'Edit Profile',
                       () {
-                        // Navigate to edit profile
+                        context.push(EditProfileScreen(user: user));
                       },
                     ),
                     Divider(height: 1, indent: 60, endIndent: 16),

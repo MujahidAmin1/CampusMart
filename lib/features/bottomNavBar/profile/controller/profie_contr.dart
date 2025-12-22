@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:campusmart/features/bottomNavBar/profile/repository/profile_repo.dart';
 import 'package:campusmart/models/product.dart';
 import 'package:campusmart/models/user.dart';
@@ -74,5 +75,9 @@ class ProfileController extends StateNotifier<AsyncValue<User>> {
   }
   Future deleteProduct(String productId) async {
     await profileRepository.deleteProduct(productId);
+  }
+
+  Future<void> updateProfile({required String username, File? imageFile}) async {
+    await profileRepository.updateProfile(username: username, imageFile: imageFile);
   }
 }

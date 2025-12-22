@@ -1,5 +1,7 @@
 import 'dart:developer';
+import 'dart:io';
 
+import 'package:campusmart/core/cloudinary_img_upl.dart';
 import 'package:campusmart/core/providers.dart';
 import 'package:campusmart/models/product.dart';
 import 'package:campusmart/models/user.dart';
@@ -11,15 +13,19 @@ final profileProvider = Provider((ref) {
   return ProfileRepository(
     firebaseAuth: ref.watch(firebaseAuthProvider),
     firebaseFirestore: ref.watch(firestoreProvider),
+    cloudinaryService: ref.watch(cloudinaryServiceProvider),
   );
 });
 
 class ProfileRepository {
-  FirebaseFirestore firebaseFirestore;
-  FirebaseAuth firebaseAuth;
+  final FirebaseFirestore firebaseFirestore;
+  final FirebaseAuth firebaseAuth;
+  final CloudinaryService cloudinaryService;
+
   ProfileRepository({
     required this.firebaseAuth,
     required this.firebaseFirestore,
+    required this.cloudinaryService,
   });
 
   Future<User> fetchUserById(String id) async {
@@ -108,6 +114,26 @@ class ProfileRepository {
     } catch (e) {
       log('Error deleting product $productId: $e');
       throw e;
+    }
+  }
+  
+  Future<void> updateProfile({required String username, File? imageFile}) async {
+    try {
+      final currentUser = firebaseAuth.currentUser;
+      if (currentUser == null) return;
+      
+      final Map<String, dynamic> data = {'username': username};
+      
+      if (imageFile != null) {
+        // Upload image if provided
+        final String imgUrl = await cloudinaryService.uploadImage(imageFile);
+        data['profilePic'] = imgUrl;
+      }
+      
+      await firebaseFirestore.collection('users').doc(currentUser.uid).update(data);
+    } catch (e) {
+      log('Error updating profile: $e');
+      rethrow;
     }
   }
 }
