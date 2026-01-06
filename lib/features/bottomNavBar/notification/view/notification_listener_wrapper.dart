@@ -80,6 +80,9 @@ class _NotificationListenerWrapperState
                if (currentStatus == OrderStatus.paid) {
                   title = 'Payment Received';
                   body = 'Buyer has paid for $productTitle';
+               } else if (currentStatus == OrderStatus.completed) {
+                  title = 'Payment Released!';
+                  body = 'Payment of ₦${order.amount} has been released for order #${order.orderId.substring(0, 8)}';
                }
             } else {
                // Buyer notifications

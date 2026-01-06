@@ -296,8 +296,8 @@ class _NotificationTile extends ConsumerWidget {
         );
       case OrderStatus.completed:
         return _StatusInfo(
-          title: 'Order Completed',
-          icon: Iconsax.tick_circle,
+          title: isSeller ? 'Payment Released!' : 'Order Completed',
+          icon: isSeller ? Iconsax.money_recive : Iconsax.tick_circle,
           color: Colors.green,
         );
     }
