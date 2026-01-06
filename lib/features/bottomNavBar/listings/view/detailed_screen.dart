@@ -4,11 +4,15 @@ import 'package:campusmart/core/utils/ktextstyle.dart';
 import 'package:campusmart/features/auth/controller/auth_controller.dart';
 import 'package:campusmart/features/bottomNavBar/listings/controller/listing_contr.dart';
 import 'package:campusmart/features/bottomNavBar/listings/view/owner_profile_lists.dart';
-import 'package:campusmart/features/payment/view/payment_screen.dart';
+import 'package:campusmart/features/bottomNavBar/orders/controller/order_contr.dart';
+import 'package:campusmart/features/bottomNavBar/orders/repository/order_repo.dart';
+import 'package:campusmart/features/payment/payment_service.dart';
+import 'package:campusmart/models/order.dart';
 import 'package:campusmart/models/product.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
+import 'package:uuid/uuid.dart';
 
 class ProductDetailedScreen extends ConsumerStatefulWidget {
   final bool looped;
@@ -27,7 +31,9 @@ class _ProductDetailedScreenState extends ConsumerState<ProductDetailedScreen> {
   @override
   Widget build(BuildContext context) {
     final authuser = ref.read(firebaseAuthProvider).currentUser;
-    final productOwner = ref.watch(productOwnerProvider(widget.product.ownerId));
+    final productOwner =
+        ref.watch(productOwnerProvider(widget.product.ownerId));
+
     double height = MediaQuery.of(context).size.height;
     return Scaffold(
       backgroundColor: Colors.white,
@@ -195,7 +201,8 @@ class _ProductDetailedScreenState extends ConsumerState<ProductDetailedScreen> {
                           GestureDetector(
                             onTap: () {
                               context.push(
-                                OwnerProfileListsScreen(ownerId: widget.product.ownerId),
+                                OwnerProfileListsScreen(
+                                    ownerId: widget.product.ownerId),
                               );
                             },
                             child: Row(
@@ -280,8 +287,6 @@ class _ProductDetailedScreenState extends ConsumerState<ProductDetailedScreen> {
             ),
           ),
 
-
-
           // Order Button (Fixed at bottom)
           if (!widget.looped)
             Positioned(
@@ -314,9 +319,52 @@ class _ProductDetailedScreenState extends ConsumerState<ProductDetailedScreen> {
                     ],
                   ),
                   child: ElevatedButton(
-                    onPressed: () {
-                      context.push(PaymentScreen(product: widget.product));
-                    },
+                    onPressed: () async {
+                        final user =
+                            ref.read(firebaseAuthProvider).currentUser!;
+                        final paymentService = PaymentServices();
+
+                        final paymentResult = await paymentService.makePayment(
+                          context: context,
+                          email: user.email!,
+                          amount: widget.product.price,
+                        );
+
+                        if (paymentResult.status != PaymentStatus.success) {
+                          return;
+                        }
+
+                        final order = Order(
+                          orderId: const Uuid().v4(),
+                          productId: widget.product.productId,
+                          buyerId: user.uid,
+                          sellerId: widget.product.ownerId,
+                          amount: widget.product.price,
+                          paymentId: paymentResult.reference!,
+                          status: OrderStatus.paid,
+                          orderDate: DateTime.now(),
+                          deliveryAddress: "deliveryAddress",
+                          isShippingConfirmed: false,
+                          hasCollectedItem: false,
+                          recievedAt: null,
+                        );
+                        await ref.read(orderProvider).createOrder(order);
+                        await showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: Text('Order Placed'),
+                            content: Text(
+                                'Your order has been placed successfully!'),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.pop(context),
+                                child: Text('OK'),
+                              ),
+                            ],
+                          ),
+                        );
+                        context.pop();
+                      },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.transparent,
                       shadowColor: Colors.transparent,

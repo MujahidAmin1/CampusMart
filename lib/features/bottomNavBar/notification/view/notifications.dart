@@ -193,7 +193,7 @@ class _NotificationTile extends ConsumerWidget {
                               color: statusInfo.color,
                             ),
                           ),
-                          if (isSeller && order.status == OrderStatus.paid)
+                          if (isSeller && order.status == OrderStatus.processing)
                              TextSpan(text: '. Please ship it soon!'),
                         ],
                       ),
