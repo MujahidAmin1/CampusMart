@@ -10,8 +10,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
-import 'package:campusmart/core/services/notification_service.dart';
 import 'package:campusmart/features/bottomNavBar/notification/view/notification_listener_wrapper.dart';
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

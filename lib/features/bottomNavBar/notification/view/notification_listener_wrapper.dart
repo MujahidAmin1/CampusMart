@@ -1,7 +1,8 @@
 import 'package:campusmart/core/providers.dart';
-import 'package:campusmart/core/services/notification_service.dart';
+import 'package:campusmart/features/bottomNavBar/notification/repository/notification_repo.dart';
 import 'package:campusmart/features/bottomNavBar/orders/controller/order_contr.dart';
 import 'package:campusmart/features/bottomNavBar/listings/repository/listing_repo.dart';
+import 'package:campusmart/models/app_notification.dart';
 import 'package:campusmart/models/order.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -29,10 +30,31 @@ class _NotificationListenerWrapperState
     }
   }
 
+  /// Creates an in-app notification in Firestore for the specified user
+  Future<void> _createNotification({
+    required String userId,
+    required String title,
+    required String body,
+    required NotificationType type,
+    required String orderId,
+  }) async {
+    await ref.read(notificationRepositoryProvider).createNotification(
+      userId: userId,
+      title: title,
+      body: body,
+      type: type,
+      relatedId: orderId,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    final currentUserId = ref.watch(firebaseAuthProvider).currentUser?.uid;
+    
     // Listen to the stream of all orders
     ref.listen(allOrdersProvider, (previous, next) {
+      if (currentUserId == null) return;
+      
       if (_isFirstLoad) {
         // On first load, just populate the map, don't notify
         if (next.isNotEmpty) {
@@ -47,20 +69,27 @@ class _NotificationListenerWrapperState
       for (var order in next) {
         final previousStatus = _previousOrderStatuses[order.orderId];
         final currentStatus = order.status;
-        final currentUserId = ref.read(firebaseAuthProvider).currentUser?.uid;
+        
+        // Determine current user's role in this order
+        final isBuyer = order.buyerId == currentUserId;
+        final isSeller = order.sellerId == currentUserId;
+        
+        if (!isBuyer && !isSeller) {
+          // This order doesn't involve the current user, skip
+          continue;
+        }
 
-        // Check for new order
+        // Check for new order (buyer places order)
         if (previousStatus == null) {
-          // It's a new order!
-          final isSeller = order.sellerId == currentUserId;
-          
-          if (isSeller) {
-            // Fetch product title asynchronously and show notification
+          // Only buyer creates the "new order" notification for seller
+          if (isBuyer) {
             _getProductTitle(order.productId).then((productTitle) {
-              NotificationService().showNotification(
-                id: order.orderId.hashCode,
+              _createNotification(
+                userId: order.sellerId,
                 title: 'New Order Received!',
-                body: 'You have a new order for $productTitle - ₦${order.amount}',
+                body: 'You have a new order for $productTitle - ₦${order.amount}\norderId: ${order.orderId.substring(0, 6)}...',
+                type: NotificationType.orderNew,
+                orderId: order.orderId,
               );
             });
           }
@@ -69,37 +98,71 @@ class _NotificationListenerWrapperState
         } 
         // Check for status change
         else if (previousStatus != currentStatus) {
-          final isSeller = order.sellerId == currentUserId;
-          
-          // Fetch product title asynchronously and show notification
           _getProductTitle(order.productId).then((productTitle) {
-            String title = 'Order Update';
-            String body = '$productTitle - Order #${order.orderId.substring(0, 8)} status changed to ${orderStatusToString(currentStatus)}';
-
-            if (isSeller) {
-               if (currentStatus == OrderStatus.paid) {
-                  title = 'Payment Received';
-                  body = 'Buyer has paid for $productTitle';
-               } else if (currentStatus == OrderStatus.completed) {
-                  title = 'Payment Released!';
-                  body = 'Payment of ₦${order.amount} has been released for order #${order.orderId.substring(0, 8)}';
-               }
-            } else {
-               // Buyer notifications
-               if (currentStatus == OrderStatus.shipped) {
-                 title = 'Order Shipped!';
-                 body = 'Your order for $productTitle is on its way.';
-               } else if (currentStatus == OrderStatus.collected) {
-                 title = 'Order Delivered';
-                 body = 'Your order for $productTitle has been collected.';
-               }
+            
+            if (currentStatus == OrderStatus.paid) {
+              // Buyer triggers payment, so BUYER creates notifications for both
+              if (isBuyer) {
+                // Buyer gets payment confirmation
+                _createNotification(
+                  userId: order.buyerId,
+                  title: 'Payment Successful',
+                  body: 'You have successfully paid for $productTitle',
+                  type: NotificationType.orderPaid,
+                  orderId: order.orderId,
+                );
+                // Seller gets payment received notification
+                _createNotification(
+                  userId: order.sellerId,
+                  title: 'Payment Received',
+                  body: 'Buyer has paid for $productTitle - ₦${order.amount}',
+                  type: NotificationType.orderPaid,
+                  orderId: order.orderId,
+                );
+              }
+            } else if (currentStatus == OrderStatus.shipped) {
+              // Admin/Seller triggers shipping, so SELLER creates notification for buyer
+              if (isSeller) {
+                _createNotification(
+                  userId: order.buyerId,
+                  title: 'Order Shipped!',
+                  body: 'Your order for $productTitle is at the pickup station.',
+                  type: NotificationType.orderShipped,
+                  orderId: order.orderId,
+                );
+              }
+            } else if (currentStatus == OrderStatus.collected) {
+              // Admin triggers collection, so SELLER creates notification for buyer
+              if (isSeller) {
+                _createNotification(
+                  userId: order.buyerId,
+                  title: 'Order Collected',
+                  body: 'Your order for $productTitle has been collected.',
+                  type: NotificationType.orderCollected,
+                  orderId: order.orderId,
+                );
+              }
+            } else if (currentStatus == OrderStatus.completed) {
+              // Admin triggers completion, so SELLER creates notifications for both
+              if (isSeller) {
+                // Seller gets payment released notification
+                _createNotification(
+                  userId: order.sellerId,
+                  title: 'Payment Released!',
+                  body: 'Payment of ₦${order.amount} has been released for $productTitle',
+                  type: NotificationType.paymentReleased,
+                  orderId: order.orderId,
+                );
+                // Buyer gets order completed notification
+                _createNotification(
+                  userId: order.buyerId,
+                  title: 'Order Completed',
+                  body: 'Your order for $productTitle is now complete.',
+                  type: NotificationType.orderCompleted,
+                  orderId: order.orderId,
+                );
+              }
             }
-
-            NotificationService().showNotification(
-              id: order.orderId.hashCode,
-              title: title,
-              body: body,
-            );
           });
           
           _previousOrderStatuses[order.orderId] = currentStatus;
