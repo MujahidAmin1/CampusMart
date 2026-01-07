@@ -30,6 +30,22 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
   Widget build(BuildContext context) {
     final isSignup = ref.watch(isSignupProvider);
     final authstate = ref.watch(authControllerProvider);
+    
+    ref.listen<AsyncValue<void>>(authControllerProvider, (previous, next) {
+      if (next.hasError) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              next.error.toString().replaceAll('Exception:', '').trim(),
+            ),
+            backgroundColor: Colors.red.shade600,
+            behavior: SnackBarBehavior.floating,
+            margin: const EdgeInsets.all(16),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          ),
+        );
+      }
+    });
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
