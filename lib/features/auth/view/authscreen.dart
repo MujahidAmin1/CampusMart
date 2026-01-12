@@ -26,11 +26,13 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   final AutovalidateMode _autovalidateMode = AutovalidateMode.disabled;
+  final RegExp bukRegNoRegex =
+      RegExp(r'^[A-Z]{3}\/(20|21|22|23|24|25|26)\/[A-Z]{3}\/\d{5}$');
   @override
   Widget build(BuildContext context) {
     final isSignup = ref.watch(isSignupProvider);
     final authstate = ref.watch(authControllerProvider);
-    
+
     ref.listen<AsyncValue<void>>(authControllerProvider, (previous, next) {
       if (next.hasError) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -41,7 +43,8 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
             backgroundColor: Colors.red.shade600,
             behavior: SnackBarBehavior.floating,
             margin: const EdgeInsets.all(16),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
           ),
         );
       }
@@ -86,14 +89,23 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
                     const SizedBox(height: 20),
                     Center(
                         child: Text("Welcome to CampusMart",
-                            style: kTextStyle(color: Color(0xff3A2770), size: 26, isBold: true))),
+                            style: kTextStyle(
+                                color: Color(0xff3A2770),
+                                size: 26,
+                                isBold: true))),
                     Center(
                         child: Text("Your Campus, Your Marketplace",
-                            style: kTextStyle(color: Color(0xff3A2770).withOpacity(0.6), size: 16))),
+                            style: kTextStyle(
+                                color: Color(0xff3A2770).withOpacity(0.6),
+                                size: 16))),
                     const SizedBox(height: 30),
                     Center(
-                        child: Text(isSignup ? "Create Account" : "Welcome Back",
-                            style: kTextStyle(size: 28, isBold: true, color: Color(0xff3A2770)))),
+                        child: Text(
+                            isSignup ? "Create Account" : "Welcome Back",
+                            style: kTextStyle(
+                                size: 28,
+                                isBold: true,
+                                color: Color(0xff3A2770)))),
                     const SizedBox(height: 10),
                     Card(
                       elevation: 8,
@@ -116,27 +128,33 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
                                 controller: usernameController,
                                 cursorColor: Color(0xff8E6CEF),
                                 decoration: InputDecoration(
-                                  prefixIcon: Icon(Icons.person_outline, color: Color(0xff8E6CEF)),
+                                  prefixIcon: Icon(Icons.person_outline,
+                                      color: Color(0xff8E6CEF)),
                                   focusedBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(12),
-                                    borderSide: BorderSide(color: Color(0xff8E6CEF), width: 2),
+                                    borderSide: BorderSide(
+                                        color: Color(0xff8E6CEF), width: 2),
                                   ),
                                   enabledBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(12),
-                                    borderSide: BorderSide(color: Colors.grey.shade300),
+                                    borderSide:
+                                        BorderSide(color: Colors.grey.shade300),
                                   ),
                                   errorBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(12),
-                                    borderSide: BorderSide(color: Colors.red.shade300),
+                                    borderSide:
+                                        BorderSide(color: Colors.red.shade300),
                                   ),
                                   focusedErrorBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(12),
-                                    borderSide: BorderSide(color: Colors.red, width: 2),
+                                    borderSide:
+                                        BorderSide(color: Colors.red, width: 2),
                                   ),
                                   filled: true,
                                   fillColor: Colors.grey.shade50,
                                   hintText: "Username",
-                                  hintStyle: TextStyle(color: Colors.grey.shade400),
+                                  hintStyle:
+                                      TextStyle(color: Colors.grey.shade400),
                                 ),
                                 validator: (value) {
                                   if (value == null || value.isEmpty) {
@@ -150,31 +168,41 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
                                 controller: regNoController,
                                 cursorColor: Color(0xff8E6CEF),
                                 decoration: InputDecoration(
-                                  prefixIcon: Icon(Icons.badge_outlined, color: Color(0xff8E6CEF)),
+                                  prefixIcon: Icon(Icons.badge_outlined,
+                                      color: Color(0xff8E6CEF)),
                                   focusedBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(12),
-                                    borderSide: BorderSide(color: Color(0xff8E6CEF), width: 2),
+                                    borderSide: BorderSide(
+                                        color: Color(0xff8E6CEF), width: 2),
                                   ),
                                   enabledBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(12),
-                                    borderSide: BorderSide(color: Colors.grey.shade300),
+                                    borderSide:
+                                        BorderSide(color: Colors.grey.shade300),
                                   ),
                                   errorBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(12),
-                                    borderSide: BorderSide(color: Colors.red.shade300),
+                                    borderSide:
+                                        BorderSide(color: Colors.red.shade300),
                                   ),
                                   focusedErrorBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(12),
-                                    borderSide: BorderSide(color: Colors.red, width: 2),
+                                    borderSide:
+                                        BorderSide(color: Colors.red, width: 2),
                                   ),
                                   filled: true,
                                   fillColor: Colors.grey.shade50,
                                   hintText: "Registration Number",
-                                  hintStyle: TextStyle(color: Colors.grey.shade400),
+                                  hintStyle:
+                                      TextStyle(color: Colors.grey.shade400),
                                 ),
                                 validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return 'Please enter your registration number';
+                                  if (value == null || value.trim().isEmpty) {
+                                    return 'Registration number is required';
+                                  }
+                                  final input = value.trim();
+                                  if (!bukRegNoRegex.hasMatch(input)) {
+                                    return 'Invalid registration number format';
                                   }
                                   return null;
                                 },
@@ -183,27 +211,33 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
                               controller: emailController,
                               cursorColor: Color(0xff8E6CEF),
                               decoration: InputDecoration(
-                                prefixIcon: Icon(Icons.email_outlined, color: Color(0xff8E6CEF)),
+                                prefixIcon: Icon(Icons.email_outlined,
+                                    color: Color(0xff8E6CEF)),
                                 focusedBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(12),
-                                  borderSide: BorderSide(color: Color(0xff8E6CEF), width: 2),
+                                  borderSide: BorderSide(
+                                      color: Color(0xff8E6CEF), width: 2),
                                 ),
                                 enabledBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(12),
-                                  borderSide: BorderSide(color: Colors.grey.shade300),
+                                  borderSide:
+                                      BorderSide(color: Colors.grey.shade300),
                                 ),
                                 errorBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(12),
-                                  borderSide: BorderSide(color: Colors.red.shade300),
+                                  borderSide:
+                                      BorderSide(color: Colors.red.shade300),
                                 ),
                                 focusedErrorBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(12),
-                                  borderSide: BorderSide(color: Colors.red, width: 2),
+                                  borderSide:
+                                      BorderSide(color: Colors.red, width: 2),
                                 ),
                                 filled: true,
                                 fillColor: Colors.grey.shade50,
                                 hintText: "Email",
-                                hintStyle: TextStyle(color: Colors.grey.shade400),
+                                hintStyle:
+                                    TextStyle(color: Colors.grey.shade400),
                               ),
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
@@ -219,27 +253,33 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
                               obscureText: true,
                               cursorColor: Color(0xff8E6CEF),
                               decoration: InputDecoration(
-                                prefixIcon: Icon(Icons.lock_outline, color: Color(0xff8E6CEF)),
+                                prefixIcon: Icon(Icons.lock_outline,
+                                    color: Color(0xff8E6CEF)),
                                 focusedBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(12),
-                                  borderSide: BorderSide(color: Color(0xff8E6CEF), width: 2),
+                                  borderSide: BorderSide(
+                                      color: Color(0xff8E6CEF), width: 2),
                                 ),
                                 enabledBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(12),
-                                  borderSide: BorderSide(color: Colors.grey.shade300),
+                                  borderSide:
+                                      BorderSide(color: Colors.grey.shade300),
                                 ),
                                 errorBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(12),
-                                  borderSide: BorderSide(color: Colors.red.shade300),
+                                  borderSide:
+                                      BorderSide(color: Colors.red.shade300),
                                 ),
                                 focusedErrorBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(12),
-                                  borderSide: BorderSide(color: Colors.red, width: 2),
+                                  borderSide:
+                                      BorderSide(color: Colors.red, width: 2),
                                 ),
                                 filled: true,
                                 fillColor: Colors.grey.shade50,
                                 hintText: "Password",
-                                hintStyle: TextStyle(color: Colors.grey.shade400),
+                                hintStyle:
+                                    TextStyle(color: Colors.grey.shade400),
                               ),
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
@@ -282,7 +322,9 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
                           isSignup
                               ? "Already have an account? "
                               : "Don't have an account? ",
-                          style: kTextStyle(size: 14, color: MyColors.darkBase.withOpacity(0.7)),
+                          style: kTextStyle(
+                              size: 14,
+                              color: MyColors.darkBase.withOpacity(0.7)),
                         ),
                         GestureDetector(
                           onTap: () => toggleAuthStatus(ref, !isSignup),
