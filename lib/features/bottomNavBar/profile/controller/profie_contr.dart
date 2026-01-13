@@ -17,9 +17,9 @@ final myListingsProvider = FutureProvider<List<Product>>((ref) async {
 });
 
 
-final userByIdProvider = FutureProvider.family<User, String>((ref, userId) async {
+final userByIdProvider = StreamProvider.family<User?, String>((ref, userId) {
   final repo = ref.watch(profileProvider);
-  return await repo.fetchUserById(userId);
+  return repo.streamUserById(userId);
 });
 
 // Provider to fetch products listed by current user

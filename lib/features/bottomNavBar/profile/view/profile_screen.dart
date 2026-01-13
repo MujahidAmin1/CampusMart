@@ -33,6 +33,40 @@ class ProfileScreen extends ConsumerWidget {
       ),
       body: userstate.when(
         data: (user) {
+          // Show loading state if user document doesn't exist yet
+          if (user == null) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    width: 80,
+                    height: 80,
+                    decoration: BoxDecoration(
+                      color: Color(0xff8E6CEF),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Padding(
+                      padding: EdgeInsets.all(20),
+                      child: CircularProgressIndicator(
+                        strokeWidth: 3,
+                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 24),
+                  Text(
+                    'Setting up your profile...',
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Color(0xff3A2770).withOpacity(0.7),
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }
           return ListView(
             padding: const EdgeInsets.all(16),
             children: [

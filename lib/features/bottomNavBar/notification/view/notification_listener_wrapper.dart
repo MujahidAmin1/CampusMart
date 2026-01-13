@@ -81,9 +81,10 @@ class _NotificationListenerWrapperState
 
         // Check for new order (buyer places order)
         if (previousStatus == null) {
-          // Only buyer creates the "new order" notification for seller
+          // Only buyer creates notifications for new orders
           if (isBuyer) {
             _getProductTitle(order.productId).then((productTitle) {
+              // Send "new order" notification to seller
               _createNotification(
                 userId: order.sellerId,
                 title: 'New Order Received!',
@@ -91,6 +92,26 @@ class _NotificationListenerWrapperState
                 type: NotificationType.orderNew,
                 orderId: order.orderId,
               );
+              
+              // If order is created with paid status, also send paid notifications
+              if (currentStatus == OrderStatus.paid) {
+                // Buyer gets payment confirmation
+                _createNotification(
+                  userId: order.buyerId,
+                  title: 'Payment Successful',
+                  body: 'You have successfully paid for $productTitle',
+                  type: NotificationType.orderPaid,
+                  orderId: order.orderId,
+                );
+                // Seller gets payment received notification
+                _createNotification(
+                  userId: order.sellerId,
+                  title: 'Payment Received',
+                  body: 'Buyer has paid for $productTitle - ₦${order.amount}',
+                  type: NotificationType.orderPaid,
+                  orderId: order.orderId,
+                );
+              }
             });
           }
          
@@ -101,7 +122,7 @@ class _NotificationListenerWrapperState
           _getProductTitle(order.productId).then((productTitle) {
             
             if (currentStatus == OrderStatus.paid) {
-              // Buyer triggers payment, so BUYER creates notifications for both
+              // Buyer triggers payment, so ONLY BUYER creates notifications for both parties
               if (isBuyer) {
                 // Buyer gets payment confirmation
                 _createNotification(
@@ -120,49 +141,18 @@ class _NotificationListenerWrapperState
                   orderId: order.orderId,
                 );
               }
-            } else if (currentStatus == OrderStatus.shipped) {
-              // Admin/Seller triggers shipping, so SELLER creates notification for buyer
-              if (isSeller) {
-                _createNotification(
-                  userId: order.buyerId,
-                  title: 'Order Shipped!',
-                  body: 'Your order for $productTitle is at the pickup station.',
-                  type: NotificationType.orderShipped,
-                  orderId: order.orderId,
-                );
-              }
-            } else if (currentStatus == OrderStatus.collected) {
-              // Admin triggers collection, so SELLER creates notification for buyer
-              if (isSeller) {
-                _createNotification(
-                  userId: order.buyerId,
-                  title: 'Order Collected',
-                  body: 'Your order for $productTitle has been collected.',
-                  type: NotificationType.orderCollected,
-                  orderId: order.orderId,
-                );
-              }
-            } else if (currentStatus == OrderStatus.completed) {
-              // Admin triggers completion, so SELLER creates notifications for both
-              if (isSeller) {
-                // Seller gets payment released notification
-                _createNotification(
-                  userId: order.sellerId,
-                  title: 'Payment Released!',
-                  body: 'Payment of ₦${order.amount} has been released for $productTitle',
-                  type: NotificationType.paymentReleased,
-                  orderId: order.orderId,
-                );
-                // Buyer gets order completed notification
-                _createNotification(
-                  userId: order.buyerId,
-                  title: 'Order Completed',
-                  body: 'Your order for $productTitle is now complete.',
-                  type: NotificationType.orderCompleted,
-                  orderId: order.orderId,
-                );
-              }
+              // Note: Seller does NOT create notifications for 'paid' status
+              // to avoid duplicates
             }
+            // For admin-triggered status changes (shipped, collected, completed),
+            // notifications should be created from the admin panel when the status
+            // is changed, NOT from user apps. This prevents duplicate notifications
+            // from both buyer and seller apps seeing the same change.
+            //
+            // The following status changes are handled by admin actions:
+            // - shipped: Admin drops off item at pickup station
+            // - collected: Admin confirms buyer collected item  
+            // - completed: Admin releases payment to seller
           });
           
           _previousOrderStatuses[order.orderId] = currentStatus;

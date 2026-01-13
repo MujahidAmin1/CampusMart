@@ -37,6 +37,16 @@ class ProfileRepository {
     }
   }
 
+  /// Stream-based user fetch - automatically updates when document is created/changed
+  Stream<User?> streamUserById(String id) {
+    return firebaseFirestore.collection('users').doc(id).snapshots().map((doc) {
+      if (doc.exists && doc.data() != null) {
+        return User.fromMap(doc.data()!);
+      }
+      return null;
+    });
+  }
+
   Future<List<Product>> getProductsListedByMe() async {
     final currentUser = firebaseAuth.currentUser;
 
