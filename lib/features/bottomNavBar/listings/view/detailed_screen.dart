@@ -1,10 +1,10 @@
 import 'package:campusmart/core/providers.dart';
 import 'package:campusmart/core/utils/extensions.dart';
 import 'package:campusmart/core/utils/ktextstyle.dart';
-import 'package:campusmart/features/auth/controller/auth_controller.dart';
+import 'package:campusmart/core/utils/price_format.dart';
 import 'package:campusmart/features/bottomNavBar/listings/controller/listing_contr.dart';
 import 'package:campusmart/features/bottomNavBar/listings/view/owner_profile_lists.dart';
-import 'package:campusmart/features/bottomNavBar/orders/controller/order_contr.dart';
+import 'package:campusmart/features/bottomNavBar/listings/view/successpage.dart';
 import 'package:campusmart/features/bottomNavBar/orders/repository/order_repo.dart';
 import 'package:campusmart/features/payment/payment_service.dart';
 import 'package:campusmart/models/order.dart';
@@ -158,19 +158,14 @@ class _ProductDetailedScreenState extends ConsumerState<ProductDetailedScreen> {
                         Container(
                           padding: EdgeInsets.all(16),
                           decoration: BoxDecoration(
-                            color: Color(0xffEFC66C).withOpacity(0.1),
+                            color: Color(0xffEFC66C),
                             borderRadius: BorderRadius.circular(12),
                             border: Border.all(
-                              color: Color(0xffEFC66C).withOpacity(0.3),
+                              color: Color(0xffEFC66C),
                             ),
                           ),
                           child: Row(
                             children: [
-                              Icon(
-                                Iconsax.dollar_circle,
-                                color: Color(0xffEFC66C),
-                                size: 24,
-                              ),
                               SizedBox(width: 12),
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -183,7 +178,7 @@ class _ProductDetailedScreenState extends ConsumerState<ProductDetailedScreen> {
                                     ),
                                   ),
                                   Text(
-                                    '₦${widget.product.price.toStringAsFixed(2)}',
+                                    formatNairaPrice(widget.product.price),
                                     style: kTextStyle(
                                       isBold: true,
                                       size: 24,
@@ -223,7 +218,7 @@ class _ProductDetailedScreenState extends ConsumerState<ProductDetailedScreen> {
                                 Text(
                                   productOwner.value!.username,
                                   style: kTextStyle(
-                                    size: 14,
+                                    size: 17,
                                     color: Color(0xff8E6CEF),
                                     isBold: true,
                                   ),
@@ -248,7 +243,7 @@ class _ProductDetailedScreenState extends ConsumerState<ProductDetailedScreen> {
                             Text(
                               widget.product.description,
                               style: kTextStyle(
-                                size: 15,
+                                size: 21,
                                 color: Color(0xff3A2770).withOpacity(0.7),
                               ),
                             ),
@@ -349,21 +344,7 @@ class _ProductDetailedScreenState extends ConsumerState<ProductDetailedScreen> {
                           recievedAt: null,
                         );
                         await ref.read(orderProvider).createOrder(order);
-                        await showDialog(
-                          context: context,
-                          builder: (context) => AlertDialog(
-                            title: Text('Order Placed'),
-                            content: Text(
-                                'Your order has been placed successfully!'),
-                            actions: [
-                              TextButton(
-                                onPressed: () => Navigator.pop(context),
-                                child: Text('OK'),
-                              ),
-                            ],
-                          ),
-                        );
-                        context.pop();
+                        context.pushReplacement(Successpage(product: widget.product,));
                       },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.transparent,

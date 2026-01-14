@@ -7,6 +7,7 @@ import 'package:campusmart/features/bottomNavBar/listings/controller/listing_con
 import 'package:campusmart/features/bottomNavBar/listings/repository/listing_repo.dart';
 import 'package:campusmart/features/bottomNavBar/listings/widget/category_chips.dart';
 import 'package:campusmart/features/bottomNavBar/listings/widget/img_source_sheet.dart';
+import 'package:campusmart/features/bottomNavBar/orders/controller/order_contr.dart';
 import 'package:campusmart/models/product.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
@@ -454,12 +455,13 @@ class _CreateProdScreenState extends ConsumerState<CreateProdScreen> {
                         imageUrls: selectedImages.map((e) => e!.path).toList(),
                       );
                       await listingsProvider.createProduct(product);
+                      
                       Flushbar(
                         flushbarPosition: FlushbarPosition.TOP,
                         title: 'Product created',
                         icon: Icon(Icons.info_outline),
                       );
-
+                      ref.invalidate(ordersProvider);
                       context.pop();
                     },
                     style: ElevatedButton.styleFrom(

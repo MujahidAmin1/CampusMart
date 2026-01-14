@@ -1,7 +1,10 @@
 import 'package:campusmart/core/providers.dart';
+import 'package:campusmart/core/utils/extensions.dart';
 import 'package:campusmart/core/utils/ktextstyle.dart';
 import 'package:campusmart/core/utils/my_colors.dart';
+import 'package:campusmart/features/bottomNavBar/listings/view/successpage.dart';
 import 'package:campusmart/features/bottomNavBar/notification/controller/notification_contr.dart';
+import 'package:campusmart/features/bottomNavBar/orders/view/order_screen.dart';
 import 'package:campusmart/models/app_notification.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -55,9 +58,7 @@ class NotificationScreen extends ConsumerWidget {
           ),
         ],
       ),
-      body: currentUser == null 
-          ? Center(child: Text("Please sign in"))
-          : notificationsAsync.when(
+      body: notificationsAsync.when(
               data: (notifications) {
                 if (notifications.isEmpty) {
                   return Center(
@@ -88,7 +89,13 @@ class NotificationScreen extends ConsumerWidget {
                   separatorBuilder: (context, index) => SizedBox(height: 12),
                   itemBuilder: (context, index) {
                     final notification = notifications[index];
-                    return _NotificationTile(notification: notification);
+                    final prod =  ref.read(productByIdProvider(notification.relatedId ?? ''));
+                    return GestureDetector(
+                      onTap: (){
+                        context.push(Successpage(product: prod.value!));
+                      },
+                      child: _NotificationTile(notification: notification)
+                      );
                   },
                 );
               },
@@ -143,79 +150,116 @@ class _NotificationTile extends ConsumerWidget {
                 : MyColors.purpleShade.withOpacity(0.2),
           ),
         ),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: Column(
           children: [
-            // Icon Container
-            Container(
-              padding: EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                color: statusInfo.color.withOpacity(0.1),
-                shape: BoxShape.circle,
-              ),
-              child: Icon(
-                statusInfo.icon,
-                color: statusInfo.color,
-                size: 24,
-              ),
-            ),
-            SizedBox(width: 16),
-            // Content
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Icon Container
+                Container(
+                  padding: EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: statusInfo.color.withOpacity(0.1),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(
+                    statusInfo.icon,
+                    color: statusInfo.color,
+                    size: 24,
+                  ),
+                ),
+                SizedBox(width: 16),
+                // Content
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Expanded(
-                        child: Row(
-                          children: [
-                            if (!notification.isRead)
-                              Container(
-                                width: 8,
-                                height: 8,
-                                margin: EdgeInsets.only(right: 8),
-                                decoration: BoxDecoration(
-                                  color: MyColors.purpleShade,
-                                  shape: BoxShape.circle,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
+                            child: Row(
+                              children: [
+                                if (!notification.isRead)
+                                  Container(
+                                    width: 8,
+                                    height: 8,
+                                    margin: EdgeInsets.only(right: 8),
+                                    decoration: BoxDecoration(
+                                      color: MyColors.purpleShade,
+                                      shape: BoxShape.circle,
+                                    ),
+                                  ),
+                                Expanded(
+                                  child: Text(
+                                    notification.title,
+                                    style: kTextStyle(
+                                      size: 16,
+                                      isBold: true,
+                                      color: MyColors.darkBase,
+                                    ),
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
                                 ),
-                              ),
-                            Expanded(
-                              child: Text(
-                                notification.title,
-                                style: kTextStyle(
-                                  size: 16,
-                                  isBold: true,
-                                  color: MyColors.darkBase,
-                                ),
-                                overflow: TextOverflow.ellipsis,
-                              ),
+                              ],
                             ),
-                          ],
-                        ),
+                          ),
+                          SizedBox(width: 8),
+                          Text(
+                            _formatDate(notification.createdAt),
+                            style: kTextStyle(
+                              size: 12,
+                              color: Colors.grey,
+                            ),
+                          ),
+                        ],
                       ),
-                      SizedBox(width: 8),
+                      SizedBox(height: 4),
                       Text(
-                        _formatDate(notification.createdAt),
+                        notification.body,
                         style: kTextStyle(
-                          size: 12,
-                          color: Colors.grey,
+                          size: 14,
+                          color: MyColors.darkBase.withOpacity(0.7),
                         ),
                       ),
+                      // Order ID section
+                      if (notification.relatedId != null && notification.relatedId!.isNotEmpty) ...[
+                        SizedBox(height: 8),
+                        Container(
+                          padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: Colors.grey.withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(6),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                Iconsax.document_text,
+                                size: 12,
+                                color: Colors.grey[600],
+                              ),
+                              SizedBox(width: 4),
+                              Text(
+                                'Order #${notification.relatedId!.length > 7 ? notification.relatedId!.substring(0, 7) : notification.relatedId!}',
+                                style: kTextStyle(
+                                  size: 15,
+                                  color: Colors.black,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
                     ],
                   ),
-                  SizedBox(height: 4),
-                  Text(
-                    notification.body,
-                    style: kTextStyle(
-                      size: 14,
-                      color: MyColors.darkBase.withOpacity(0.7),
-                    ),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
+            Container(
+              color: Colors.white,
+              width: 75,
+            )
           ],
         ),
       ),

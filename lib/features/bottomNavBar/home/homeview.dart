@@ -19,7 +19,6 @@ class BottomBarC extends ConsumerWidget {
   ListingsScreen(),
   NotificationScreen(),
   OrderScreen(),
-  
   ProfileScreen(),
 ];
    return Scaffold(

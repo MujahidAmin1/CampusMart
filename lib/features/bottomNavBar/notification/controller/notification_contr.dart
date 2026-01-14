@@ -4,7 +4,7 @@ import 'package:campusmart/models/app_notification.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// Provider for the current user's notifications stream
-final notificationsProvider = StreamProvider<List<AppNotification>>((ref) {
+final notificationsProvider = StreamProvider.autoDispose<List<AppNotification>>((ref) {
   final userId = ref.watch(firebaseAuthProvider).currentUser?.uid;
   if (userId == null) {
     return Stream.value([]);
@@ -13,7 +13,7 @@ final notificationsProvider = StreamProvider<List<AppNotification>>((ref) {
 });
 
 /// Provider for unread notification count
-final unreadNotificationCountProvider = StreamProvider<int>((ref) {
+final unreadNotificationCountProvider = StreamProvider.autoDispose<int>((ref) {
   final userId = ref.watch(firebaseAuthProvider).currentUser?.uid;
   if (userId == null) {
     return Stream.value(0);
