@@ -374,8 +374,12 @@ class ProfileScreen extends ConsumerWidget {
                               ElevatedButton.icon(
                                 onPressed: () async {
                                   final url = Uri.parse('https://www.google.com/maps/search/?api=1&query=11.971707927064859,8.42293212054006');
-                                  if (await canLaunchUrl(url)) {
-                                    await launchUrl(url, mode: LaunchMode.platformDefault,);
+                                  try {
+                                    await launchUrl(url, mode: LaunchMode.externalApplication);
+                                  } catch (e) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(content: Text('Could not open maps')),
+                                    );
                                   }
                                 },
                                 icon: Icon(Icons.map, size: 18),
