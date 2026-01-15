@@ -34,7 +34,7 @@ class ProductListRepository {
       if (firebaseAuth.currentUser == null) {
         return Stream.value([]);
       }
-      final productDoc = firebaseFirestore.collection("products");
+      final productDoc = firebaseFirestore.collection("products").where('isAvailable', isEqualTo: true);
       return productDoc.snapshots().map((snaps) =>
           snaps.docs.map((doc) => Product.fromMap(doc.data())).toList());
     } on Exception catch (e) {
@@ -69,29 +69,18 @@ class ProductListRepository {
     }
   }
 
-  Future updateProduct(Product product) async {
-    final updatedProd = product.copyWith(
-      productId: product.productId,
-      ownerId: product.ownerId,
-      title: product.title,
-      description: product.description,
-      price: product.price,
-      category: product.category,
-      isAvailable: product.isAvailable,
-      datePosted: product.datePosted,
-      imageUrls: product.imageUrls,
-    );
-    final productDoc = FirebaseFirestore.instance
+  Future<void> updateProduct(Product product) async {
+    await firebaseFirestore
         .collection("products")
-        .doc(product.productId);
-    await productDoc.update(updatedProd.toMap());
+        .doc(product.productId)
+        .update(product.toMap());
   }
 
-  Future deleteProduct(Product product) async {
-    final productDoc = FirebaseFirestore.instance
+  Future<void> deleteProduct(String productId) async {
+    await firebaseFirestore
         .collection("products")
-        .doc(product.productId);
-    await productDoc.delete();
+        .doc(productId)
+        .delete();
   }
 
   Future<User> fetchProductOwner(String ownerId) async {

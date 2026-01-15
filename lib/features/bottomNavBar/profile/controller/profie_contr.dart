@@ -4,28 +4,15 @@ import 'package:campusmart/models/product.dart';
 import 'package:campusmart/models/user.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-final profileContProvider = Provider((ref) async {
-  return ProfileController(
-    profileRepository: ref.watch(profileProvider),
-  );
-});
-
-final myListingsProvider = FutureProvider<List<Product>>((ref) async {
-  ref.keepAlive(); // Prevents auto-disposal on auth change
-  final profileRepo = ref.watch(profileProvider);
-  return await profileRepo.getProductsListedByMe();
-});
-
-
 final userByIdProvider = StreamProvider.family<User?, String>((ref, userId) {
   final repo = ref.watch(profileProvider);
   return repo.streamUserById(userId);
 });
 
 // Provider to fetch products listed by current user
-final myListedProductsProvider = FutureProvider<List<Product>>((ref) async {
+final myListedProductsProvider = StreamProvider<List<Product>>((ref) {
   final repo = ref.watch(profileProvider);
-  return await repo.getProductsListedByMe();
+  return repo.getProductsListedByMe();
 });
 
 // StreamProvider for items paid for by user
@@ -64,8 +51,8 @@ class ProfileController extends StateNotifier<AsyncValue<User>> {
       state = AsyncValue.error(e, st);
     }
   }
-  Future<List<Product>> getProductsListedByMe()async{
-    return await profileRepository.getProductsListedByMe();
+  Stream<List<Product>> getProductsListedByMe(){
+    return profileRepository.getProductsListedByMe();
   }
   Stream<List<Product>> itemsPaidFor(String uid){
     return profileRepository.itemsPaidFor(uid);

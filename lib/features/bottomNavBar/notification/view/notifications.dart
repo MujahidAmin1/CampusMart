@@ -40,15 +40,18 @@ class NotificationScreen extends ConsumerWidget {
             data: (notifications) {
               final hasUnread = notifications.any((n) => !n.isRead);
               if (hasUnread) {
-                return IconButton(
+                return TextButton(
                   onPressed: () {
                     ref.read(notificationControllerProvider.notifier).markAllAsRead();
                   },
-                  icon: Icon(
-                    Iconsax.tick_circle,
-                    color: MyColors.purpleShade,
+                  child: Text(
+                    'Mark all read',
+                    style: kTextStyle(
+                      size: 14,
+                      color: MyColors.purpleShade,
+                      isBold: true,
+                    ),
                   ),
-                  tooltip: 'Mark all as read',
                 );
               }
               return SizedBox.shrink();

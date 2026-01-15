@@ -7,6 +7,7 @@ import 'package:campusmart/features/bottomNavBar/profile/view/myListings.dart';
 import 'package:campusmart/features/bottomNavBar/profile/widget/customW.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
@@ -241,7 +242,33 @@ class ProfileScreen extends ConsumerWidget {
                       Icons.privacy_tip_outlined,
                       'Privacy',
                       () {
-                        // Navigate to privacy settings
+                        showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: Text('Privacy Policy'),
+                            content: SingleChildScrollView(
+                              child: Text(
+                                'Lorem ipsum dolor sit amet, consectetur adipiscing elit. '
+                                'Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. '
+                                'Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris '
+                                'nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in '
+                                'reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla '
+                                'pariatur. Excepteur sint occaecat cupidatat non proident, sunt in '
+                                'culpa qui officia deserunt mollit anim id est laborum.\n\n'
+                                'Curabitur pretium tincidunt lacus. Nulla gravida orci a odio. '
+                                'Nullam varius, turpis et commodo pharetra, est eros bibendum elit, '
+                                'nec luctus magna felis sollicitudin mauris. Integer in mauris eu '
+                                'nibh euismod gravida. Duis ac tellus et risus vulputate vehicula.',
+                              ),
+                            ),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.pop(context),
+                                child: Text('Close'),
+                              ),
+                            ],
+                          ),
+                        );
                       },
                     ),
                     Divider(height: 1, indent: 60, endIndent: 16),
@@ -250,7 +277,117 @@ class ProfileScreen extends ConsumerWidget {
                       Icons.help_outline,
                       'Help & Support',
                       () {
-                        // Navigate to help
+                        showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: Text('Help & Support'),
+                            content: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Need help or have questions?',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                                SizedBox(height: 12),
+                                Text(
+                                  'Contact us at:',
+                                  style: TextStyle(
+                                    color: Colors.grey.shade600,
+                                  ),
+                                ),
+                                SizedBox(height: 4),
+                                SelectableText(
+                                  'mujahidamin2005@gmail.com',
+                                  style: TextStyle(
+                                    color: Color(0xff8E6CEF),
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.pop(context),
+                                child: Text('Close'),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    ),
+                    Divider(height: 1, indent: 60, endIndent: 16),
+                    buildMenuItem(
+                      context,
+                      Icons.location_on_outlined,
+                      'Pickup Station',
+                      () {
+                        showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: Row(
+                              children: [
+                                Icon(
+                                  Icons.location_on,
+                                  color: Color(0xff8E6CEF),
+                                ),
+                                SizedBox(width: 8),
+                                Text('Pickup Station'),
+                              ],
+                            ),
+                            content: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Collect your orders from:',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                                SizedBox(height: 12),
+                                Container(
+                                  padding: EdgeInsets.all(12),
+                                  decoration: BoxDecoration(
+                                    color: Color(0xff8E6CEF).withOpacity(0.1),
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  child: Text(
+                                    'Campus pickup shop, opposite tomato sellers, Coke Village, BUK new site',
+                                    style: TextStyle(
+                                      color: Color(0xff3A2770),
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.pop(context),
+                                child: Text('Close'),
+                              ),
+                              ElevatedButton.icon(
+                                onPressed: () async {
+                                  final url = Uri.parse('https://www.google.com/maps/search/?api=1&query=11.971707927064859,8.42293212054006');
+                                  if (await canLaunchUrl(url)) {
+                                    await launchUrl(url, mode: LaunchMode.platformDefault,);
+                                  }
+                                },
+                                icon: Icon(Icons.map, size: 18),
+                                label: Text('Open in Maps'),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Color(0xff8E6CEF),
+                                  foregroundColor: Colors.white,
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
                       },
                     ),
                   ],

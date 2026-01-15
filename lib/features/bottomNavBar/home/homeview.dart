@@ -3,6 +3,7 @@ import 'package:campusmart/features/bottomNavBar/navbar_controller..dart';
 import 'package:campusmart/features/bottomNavBar/notification/view/notifications.dart';
 import 'package:campusmart/features/bottomNavBar/orders/view/order_screen.dart';
 import 'package:campusmart/features/bottomNavBar/profile/view/profile_screen.dart';
+import 'package:campusmart/features/bottomNavBar/notification/controller/notification_contr.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -15,6 +16,7 @@ class BottomBarC extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     var currentScreen = ref.watch(currentScreenProvider);
+    final unreadCount = ref.watch(unreadNotificationCountProvider).valueOrNull ?? 0;
     List<Widget> screens = [
   ListingsScreen(),
   NotificationScreen(),
@@ -37,9 +39,17 @@ class BottomBarC extends ConsumerWidget {
             icon: Icon(Iconsax.home_copy),
             label: 'Home',
           ),
-          const NavigationDestination(
-            selectedIcon: Icon(Iconsax.notification),
-            icon: Icon(Iconsax.notification_copy),
+          NavigationDestination(
+            selectedIcon: Badge(
+              isLabelVisible: unreadCount > 0,
+              label: Text(unreadCount > 99 ? '99+' : unreadCount.toString()),
+              child: Icon(Iconsax.notification),
+            ),
+            icon: Badge(
+              isLabelVisible: unreadCount > 0,
+              label: Text(unreadCount > 99 ? '99+' : unreadCount.toString()),
+              child: Icon(Iconsax.notification_copy),
+            ),
             label: 'Notification',
           ),
           const NavigationDestination(

@@ -49,29 +49,3 @@ final orderByIdProvider = StreamProvider.autoDispose.family<Order?, String>((ref
   
   return repo.fetchOrderById(orderId, userId);
 });
-
-class OrderController extends StateNotifier<AsyncValue<List<Order>>> {
-  final OrderRepository orderRepo;
-  final Ref ref;
-  OrderController(this.ref, {required this.orderRepo})
-      : super(AsyncValue.loading()) {
-    fetchUserOrders();
-  }
-
-  Stream<List<Order>> fetchUserOrders(){
-    final userId = orderRepo.firebaseAuth.currentUser?.uid;
-    if (userId == null) {
-      return Stream.value([]);
-    }
-    return orderRepo.fetchUserOrders(userId);
-  }
-
-  
-  Future<void> createOrder(Order order) async {
-    try {
-      await orderRepo.createOrder(order);
-    } catch (e) {
-      state = AsyncValue.error(e, StackTrace.current);
-    }
-  }
-}

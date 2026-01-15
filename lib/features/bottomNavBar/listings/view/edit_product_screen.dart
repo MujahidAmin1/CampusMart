@@ -441,19 +441,22 @@ class _EditProductScreenState extends ConsumerState<EditProductScreen> {
                             await ref.read(profileProvider).updateProduct(updatedProduct);
 
                             if (mounted) {
-                              Flushbar(
-                                flushbarPosition: FlushbarPosition.TOP,
-                                title: 'Product updated successfully',
-                                message: 'Your changes have been saved',
-                                icon: Icon(Icons.check_circle_outline, color: Colors.white),
-                                backgroundColor: Colors.green,
-                                duration: Duration(seconds: 3),
-                              ).show(context);
+                              // Defer Flushbar and navigation to avoid !_debugLocked error
+                              WidgetsBinding.instance.addPostFrameCallback((_) {
+                                if (mounted) {
+                                  Flushbar(
+                                    flushbarPosition: FlushbarPosition.TOP,
+                                    title: 'Product updated successfully',
+                                    message: 'Your changes have been saved',
+                                    icon: Icon(Icons.check_circle_outline, color: Colors.white),
+                                    backgroundColor: Colors.green,
+                                    duration: Duration(seconds: 3),
+                                  ).show(context);
 
-                              // Refresh the listings
-                              ref.invalidate(myListingsProvider);
-                              
-                              context.pop();
+                                  // Refresh the listings
+                                  ref.invalidate(myListedProductsProvider);
+                                }
+                              });
                             }
                           } catch (e) {
                             if (mounted) {

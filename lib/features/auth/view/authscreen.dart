@@ -131,6 +131,7 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
                                   controller: usernameController,
                                   cursorColor: Color(0xff8E6CEF),
                                   decoration: InputDecoration(
+                                    labelText: 'Username',
                                     prefixIcon: Icon(Icons.person_outline,
                                         color: Color(0xff8E6CEF)),
                                     focusedBorder: OutlineInputBorder(
@@ -216,6 +217,7 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
                                 controller: emailController,
                                 cursorColor: Color(0xff8E6CEF),
                                 decoration: InputDecoration(
+                                  labelText: 'Email',
                                   prefixIcon: Icon(Icons.email_outlined,
                                       color: Color(0xff8E6CEF)),
                                   focusedBorder: OutlineInputBorder(
@@ -258,6 +260,7 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
                                 obscureText: true,
                                 cursorColor: Color(0xff8E6CEF),
                                 decoration: InputDecoration(
+                                  labelText: 'Password',
                                   prefixIcon: Icon(Icons.lock_outline,
                                       color: Color(0xff8E6CEF)),
                                   focusedBorder: OutlineInputBorder(

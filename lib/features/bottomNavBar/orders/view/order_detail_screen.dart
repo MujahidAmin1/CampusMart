@@ -98,7 +98,7 @@ class OrderDetailScreen extends ConsumerWidget {
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          '#${order.orderId.substring(0, 8).toUpperCase()}',
+                          '#${order.orderId.substring(0, 6).toUpperCase()}',
                           style: const TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,

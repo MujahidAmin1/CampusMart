@@ -31,89 +31,41 @@ class OrderRepository {
   }
 
   Stream<List<Order>> fetchUserOrders(String userId) {
-    try {
-      log('Fetching orders for userId: $userId');
-      return firebaseFirestore
-          .collection('orders')
-          .where('buyerId', isEqualTo: userId)
-          // Temporarily removed orderBy to avoid composite index requirement
-          // .orderBy('orderDate', descending: true)
-          .snapshots()
-          .handleError((error) {
-            log('Error in fetchUserOrders stream: $error');
-            log('Error type: ${error.runtimeType}');
-            throw error;
-          })
-          .map((snapshot) {
-            log('Received ${snapshot.docs.length} orders for buyer $userId');
-            if (snapshot.docs.isEmpty) {
-              log('No orders found. Check if orders exist in Firestore with buyerId: $userId');
-            }
-            final orders = snapshot.docs
-                .map((doc) {
-                  try {
-                    log('Processing order doc: ${doc.id}');
-                    final data = doc.data();
-                    log('Order data: $data');
-                    return Order.fromMap(data);
-                  } catch (e) {
-                    log('Error parsing order ${doc.id}: $e');
-                    rethrow;
-                  }
-                })
-                .toList();
-            
-            // Sort in memory instead of using Firestore orderBy
-            orders.sort((a, b) => b.orderDate.compareTo(a.orderDate));
-            
-            return orders;
-          });
-    } catch (e) {
-      log('Error setting up fetchUserOrders: $e');
-      rethrow;
-    }
+    return firebaseFirestore
+        .collection('orders')
+        .where('buyerId', isEqualTo: userId)
+        .snapshots()
+        .map((snapshot) {
+          final orders = snapshot.docs
+              .map((doc) => Order.fromMap(doc.data()))
+              .toList();
+          // Sort in memory instead of using Firestore orderBy
+          orders.sort((a, b) => b.orderDate.compareTo(a.orderDate));
+          return orders;
+        })
+        .handleError((error) {
+          log('Error in fetchUserOrders: $error');
+          throw error;
+        });
   }
 
   Stream<List<Order>> fetchSellerOrders(String userId) {
-    try {
-      log('Fetching orders for sellerId: $userId');
-      return firebaseFirestore
-          .collection('orders')
-          .where('sellerId', isEqualTo: userId)
-          // Temporarily removed orderBy to avoid composite index requirement
-          // .orderBy('orderDate', descending: true)
-          .snapshots()
-          .handleError((error) {
-            log('Error in fetchSellerOrders stream: $error');
-            log('Error type: ${error.runtimeType}');
-            throw error;
-          })
-          .map((snapshot) {
-            log('Received ${snapshot.docs.length} orders for seller $userId');
-            if (snapshot.docs.isEmpty) {
-              log('No orders found. Check if orders exist in Firestore with sellerId: $userId');
-            }
-            final orders = snapshot.docs
-                .map((doc) {
-                  try {
-                    log('Processing seller order doc: ${doc.id}');
-                    return Order.fromMap(doc.data());
-                  } catch (e) {
-                    log('Error parsing seller order ${doc.id}: $e');
-                    rethrow;
-                  }
-                })
-                .toList();
-            
-            // Sort in memory instead of using Firestore orderBy
-            orders.sort((a, b) => b.orderDate.compareTo(a.orderDate));
-            
-            return orders;
-          });
-    } catch (e) {
-      log('Error setting up fetchSellerOrders: $e');
-      rethrow;
-    }
+    return firebaseFirestore
+        .collection('orders')
+        .where('sellerId', isEqualTo: userId)
+        .snapshots()
+        .map((snapshot) {
+          final orders = snapshot.docs
+              .map((doc) => Order.fromMap(doc.data()))
+              .toList();
+          // Sort in memory instead of using Firestore orderBy
+          orders.sort((a, b) => b.orderDate.compareTo(a.orderDate));
+          return orders;
+        })
+        .handleError((error) {
+          log('Error in fetchSellerOrders: $error');
+          throw error;
+        });
   }
 
   Stream<Order?> fetchOrderById(String orderId, String userId) {

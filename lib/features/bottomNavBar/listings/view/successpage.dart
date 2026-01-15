@@ -1,4 +1,5 @@
 import 'package:campusmart/core/utils/my_colors.dart';
+import 'package:campusmart/models/order.dart';
 import 'package:campusmart/models/product.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -6,7 +7,8 @@ import 'package:intl/intl.dart';
 
 class Successpage extends ConsumerWidget {
   final Product product;
-  const Successpage({super.key, required this.product});
+  final Order? order;
+  const Successpage({super.key, required this.product, this.order});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -97,6 +99,9 @@ class Successpage extends ConsumerWidget {
                       _buildInfoRow('Order Date', orderDate),
                       const SizedBox(height: 12),
                       const Divider(height: 1),
+                      const SizedBox(height: 12),
+                      // 
+                       _buildInfoRow('OrderId', order!.orderId.substring(0,6)),
                       const SizedBox(height: 12),
                       // Product Name
                       _buildInfoRow('Product', product.title),

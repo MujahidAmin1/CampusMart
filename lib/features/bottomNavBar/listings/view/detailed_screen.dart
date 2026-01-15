@@ -5,7 +5,9 @@ import 'package:campusmart/core/utils/price_format.dart';
 import 'package:campusmart/features/bottomNavBar/listings/controller/listing_contr.dart';
 import 'package:campusmart/features/bottomNavBar/listings/view/owner_profile_lists.dart';
 import 'package:campusmart/features/bottomNavBar/listings/view/successpage.dart';
+import 'package:campusmart/features/bottomNavBar/notification/repository/notification_repo.dart';
 import 'package:campusmart/features/bottomNavBar/orders/repository/order_repo.dart';
+import 'package:campusmart/models/app_notification.dart';
 import 'package:campusmart/features/payment/payment_service.dart';
 import 'package:campusmart/models/order.dart';
 import 'package:campusmart/models/product.dart';
@@ -344,7 +346,17 @@ class _ProductDetailedScreenState extends ConsumerState<ProductDetailedScreen> {
                           recievedAt: null,
                         );
                         await ref.read(orderProvider).createOrder(order);
-                        context.pushReplacement(Successpage(product: widget.product,));
+                        
+                        // Send notification to the seller that buyer has paid
+                        await ref.read(notificationRepositoryProvider).createNotification(
+                          userId: widget.product.ownerId,
+                          title: 'New Order Received!',
+                          body: 'Someone has paid for "${widget.product.title}". Please take item to the pickup station.',
+                          type: NotificationType.orderPaid,
+                          relatedId: order.orderId,
+                        );
+                        
+                        context.pushReplacement(Successpage(product: widget.product, order: order,));
                       },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.transparent,

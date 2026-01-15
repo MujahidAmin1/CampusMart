@@ -13,7 +13,7 @@ class MyListedItemsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final myListings = ref.watch(myListingsProvider);
+    final myListings = ref.watch(myListedProductsProvider);
     
     return Scaffold(
       backgroundColor: Colors.grey.shade50,
@@ -73,7 +73,7 @@ class MyListedItemsScreen extends ConsumerWidget {
             padding: EdgeInsets.all(16),
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
-              childAspectRatio: 0.75,
+              childAspectRatio: 0.68,
               crossAxisSpacing: 12,
               mainAxisSpacing: 12,
             ),
@@ -101,7 +101,7 @@ class MyListedItemsScreen extends ConsumerWidget {
                         ClipRRect(
                           borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
                           child: Container(
-                            height: 140,
+                            height: 160,
                             width: double.infinity,
                             color: Colors.grey.shade200,
                             child: product.imageUrls.isNotEmpty
@@ -233,7 +233,7 @@ class MyListedItemsScreen extends ConsumerWidget {
                                       await ref.read(profileProvider).deleteProduct(product.productId);
                                       
                                       // Refresh the listings
-                                      ref.invalidate(myListingsProvider);
+                                      ref.invalidate(myListedProductsProvider);
                                       
                                       if (context.mounted) {
                                         ScaffoldMessenger.of(context).showSnackBar(
@@ -363,7 +363,7 @@ class MyListedItemsScreen extends ConsumerWidget {
                 ),
                 SizedBox(height: 8),
                 ElevatedButton(
-                  onPressed: () => ref.refresh(myListingsProvider),
+                  onPressed: () => ref.refresh(myListedProductsProvider),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Color(0xff8E6CEF),
                     foregroundColor: Colors.white,

@@ -31,7 +31,7 @@ class _CreateProdScreenState extends ConsumerState<CreateProdScreen> {
   @override
   Widget build(BuildContext context) {
     final selectedCategory = ref.watch(categoryFilterProvider);
-    final listingsProvider = ref.watch(myProductListProvider);
+    final listingsRepo = ref.watch(productRepositoryProvider);
     var width = MediaQuery.of(context).size.width;
     var height = MediaQuery.of(context).size.height;
     return Scaffold(
@@ -454,7 +454,7 @@ class _CreateProdScreenState extends ConsumerState<CreateProdScreen> {
                         datePosted: DateTime.now(),
                         imageUrls: selectedImages.map((e) => e!.path).toList(),
                       );
-                      await listingsProvider.createProduct(product);
+                      await listingsRepo.createProduct(product);
                       
                       Flushbar(
                         flushbarPosition: FlushbarPosition.TOP,

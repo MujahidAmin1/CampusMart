@@ -38,7 +38,7 @@ class ListingsScreen extends ConsumerWidget {
             ),
             SizedBox(width: 10),
             Text(
-              'CampusMart',
+              'BUK CampusMart',
               style: TextStyle(
                 color: Color(0xff3A2770),
                 fontWeight: FontWeight.bold,
@@ -115,26 +115,54 @@ class ListingsScreen extends ConsumerWidget {
                   ),
                 ),
                 SizedBox(width: 8),
-                Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: Colors.grey.shade200),
-                  ),
-                  child: IconButton(
-                    onPressed: () {
-                      showModalBottomSheet(
-                        context: context,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+                // Filter button with active indicator
+                Builder(
+                  builder: (context) {
+                    final priceRange = ref.watch(priceRangeFilterProvider);
+                    final isFilterActive = priceRange.start > 0 || priceRange.end < 500000;
+                    
+                    return Container(
+                      decoration: BoxDecoration(
+                        color: isFilterActive ? Color(0xff8E6CEF).withOpacity(0.1) : Colors.white,
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                          color: isFilterActive ? Color(0xff8E6CEF) : Colors.grey.shade200,
                         ),
-                        builder: (context) {
-                          return const FilterModal();
-                        },
-                      );
-                    },
-                    icon: Icon(Iconsax.filter, color: Color(0xff8E6CEF)),
-                  ),
+                      ),
+                      child: Stack(
+                        children: [
+                          IconButton(
+                            onPressed: () {
+                              showModalBottomSheet(
+                                context: context,
+                                isScrollControlled: true,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+                                ),
+                                builder: (context) {
+                                  return const FilterModal();
+                                },
+                              );
+                            },
+                            icon: Icon(Iconsax.filter, color: Color(0xff8E6CEF)),
+                          ),
+                          if (isFilterActive)
+                            Positioned(
+                              top: 8,
+                              right: 8,
+                              child: Container(
+                                width: 8,
+                                height: 8,
+                                decoration: BoxDecoration(
+                                  color: Color(0xff8E6CEF),
+                                  shape: BoxShape.circle,
+                                ),
+                              ),
+                            ),
+                        ],
+                      ),
+                    );
+                  },
                 ),
               ],
             ),
@@ -178,7 +206,9 @@ class ListingsScreen extends ConsumerWidget {
                   }
 
                   return RefreshIndicator(
-                    onRefresh: () => ref.refresh(allProductsProvider.future),
+                    onRefresh: () async {
+                      ref.invalidate(allProductsProvider);
+                    },
                     child: GridView.builder(
                       physics: const AlwaysScrollableScrollPhysics(),
                       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(

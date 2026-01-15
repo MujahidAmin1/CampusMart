@@ -47,18 +47,17 @@ class ProfileRepository {
     });
   }
 
-  Future<List<Product>> getProductsListedByMe() async {
+  Stream<List<Product>> getProductsListedByMe(){
     final currentUser = firebaseAuth.currentUser;
 
-    final userDoc = await firebaseFirestore
+    final userDoc = firebaseFirestore
         .collection('products')
         .where('ownerId', isEqualTo: currentUser?.uid)
-        .get();
-    return userDoc.docs.map((doc) => Product.fromMap(doc.data())).toList();
+        .snapshots().map((snap)=> snap.docs.map((doc) => Product.fromMap(doc.data())).toList());
+
+        return userDoc;
   }
-  /// Fetches a stream of products from orders where:
-  /// - sellerId matches the provided uid
-  /// - status is 'paid'
+
   Stream<List<Product>> itemsPaidFor(String uid) async* {
     // Query orders collection for paid orders belonging to this seller
     final ordersStream = firebaseFirestore
@@ -114,7 +113,7 @@ class ProfileRepository {
       log('Product updated successfully: ${product.productId}');
     } catch (e) {
       log('Error updating product ${product.productId}: $e');
-      throw e;
+      rethrow;
     }
   }
   
@@ -123,7 +122,7 @@ class ProfileRepository {
       await firebaseFirestore.collection('products').doc(productId).delete();
     } catch (e) {
       log('Error deleting product $productId: $e');
-      throw e;
+      rethrow;
     }
   }
   
