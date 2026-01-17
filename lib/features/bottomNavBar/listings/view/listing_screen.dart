@@ -174,7 +174,11 @@ class ListingsScreen extends ConsumerWidget {
                 data: (products) {
                   if (products.isEmpty) {
                     return RefreshIndicator(
-                      onRefresh: () => ref.refresh(allProductsProvider.future),
+                      onRefresh: () async {
+                        ref.invalidate(allProductsProvider);
+                        ref.read(categoryFilterProvider.notifier).state = Category.all;
+                        ref.read(priceRangeFilterProvider.notifier).state = RangeValues(0, 500000);
+                      },
                       child: SingleChildScrollView(
                         physics: const AlwaysScrollableScrollPhysics(),
                         child: SizedBox(
@@ -208,6 +212,8 @@ class ListingsScreen extends ConsumerWidget {
                   return RefreshIndicator(
                     onRefresh: () async {
                       ref.invalidate(allProductsProvider);
+                      ref.read(categoryFilterProvider.notifier).state = Category.all;
+                      ref.read(priceRangeFilterProvider.notifier).state = RangeValues(0, 500000);
                     },
                     child: GridView.builder(
                       physics: const AlwaysScrollableScrollPhysics(),
@@ -272,7 +278,11 @@ class ListingsScreen extends ConsumerWidget {
                   ),
                 ),
                 error: (error, stack) => RefreshIndicator(
-                  onRefresh: () => ref.refresh(allProductsProvider.future),
+                  onRefresh: () async {
+                    ref.invalidate(allProductsProvider);
+                    ref.read(categoryFilterProvider.notifier).state = Category.all;
+                    ref.read(priceRangeFilterProvider.notifier).state = RangeValues(0, 500000);
+                  },
                   child: SingleChildScrollView(
                     physics: const AlwaysScrollableScrollPhysics(),
                     child: SizedBox(
