@@ -194,15 +194,7 @@ class ProfileScreen extends ConsumerWidget {
                           context.push(MyListedItemsScreen());
                       },
                     ),
-                    Divider(height: 1, indent: 60, endIndent: 16),
-                    buildMenuItem(
-                      context,
-                      Icons.favorite_outline,
-                      'Favorites',
-                      () {
-                        // Navigate to favorites
-                      },
-                    ),
+                  
                   ],
                 ),
               ),

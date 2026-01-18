@@ -9,6 +9,7 @@ import 'package:campusmart/features/bottomNavBar/notification/repository/notific
 import 'package:campusmart/features/bottomNavBar/orders/repository/order_repo.dart';
 import 'package:campusmart/models/app_notification.dart';
 import 'package:campusmart/features/payment/payment_service.dart';
+import 'package:campusmart/features/payment/payment_confirmation_screen.dart';
 import 'package:campusmart/models/order.dart';
 import 'package:campusmart/models/product.dart';
 import 'package:flutter/material.dart';
@@ -302,7 +303,37 @@ class _ProductDetailedScreenState extends ConsumerState<ProductDetailedScreen> {
                     ),
                   ],
                 ),
-                child: Container(
+                child: authuser?.uid == widget.product.ownerId
+                    // User owns this product - show message instead of button
+                    ? Container(
+                        width: double.infinity,
+                        padding: EdgeInsets.symmetric(vertical: 16),
+                        decoration: BoxDecoration(
+                          color: Colors.grey.shade200,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Iconsax.info_circle,
+                              color: Colors.grey.shade600,
+                              size: 20,
+                            ),
+                            SizedBox(width: 8),
+                            Text(
+                              "You own this product",
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.grey.shade600,
+                              ),
+                            ),
+                          ],
+                        ),
+                      )
+                    // User doesn't own this product - show order button
+                    : Container(
                   width: double.infinity,
                   decoration: BoxDecoration(
                     color: Color(0xff8E6CEF),
@@ -319,44 +350,50 @@ class _ProductDetailedScreenState extends ConsumerState<ProductDetailedScreen> {
                     onPressed: () async {
                         final user =
                             ref.read(firebaseAuthProvider).currentUser!;
-                        final paymentService = PaymentServices();
 
-                        final paymentResult = await paymentService.makePayment(
-                          context: context,
-                          email: user.email!,
-                          amount: widget.product.price,
-                        );
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (ctx) => PaymentConfirmationScreen(
+                              product: widget.product,
+                              userEmail: user.email!,
+                              onPaymentComplete: (paymentResult) async {
+                                if (paymentResult.status != PaymentStatus.success) {
+                                  return;
+                                }
 
-                        if (paymentResult.status != PaymentStatus.success) {
-                          return;
-                        }
-
-                        final order = Order(
-                          orderId: const Uuid().v4(),
-                          productId: widget.product.productId,
-                          buyerId: user.uid,
-                          sellerId: widget.product.ownerId,
-                          amount: widget.product.price,
-                          paymentId: paymentResult.reference!,
-                          status: OrderStatus.paid,
-                          orderDate: DateTime.now(),
-                          deliveryAddress: "deliveryAddress",
-                          isShippingConfirmed: false,
-                          hasCollectedItem: false,
-                          recievedAt: null,
+                                final order = Order(
+                                  orderId: const Uuid().v4(),
+                                  productId: widget.product.productId,
+                                  buyerId: user.uid,
+                                  sellerId: widget.product.ownerId,
+                                  amount: widget.product.price,
+                                  paymentId: paymentResult.reference!,
+                                  status: OrderStatus.paid,
+                                  orderDate: DateTime.now(),
+                                  deliveryAddress: "deliveryAddress",
+                                  isShippingConfirmed: false,
+                                  hasCollectedItem: false,
+                                  recievedAt: null,
+                                );
+                                await ref.read(orderProvider).createOrder(order);
+                                
+                                // Send notification to the seller that buyer has paid
+                                await ref.read(notificationRepositoryProvider).createNotification(
+                                  userId: widget.product.ownerId,
+                                  title: 'New Order Received!',
+                                  body: 'Someone has paid for "${widget.product.title}". Please take item to the pickup station.',
+                                  type: NotificationType.orderPaid,
+                                  relatedId: order.orderId,
+                                );
+                                
+                                if (context.mounted) {
+                                  context.pushReplacement(Successpage(product: widget.product, order: order));
+                                }
+                              },
+                            ),
+                          ),
                         );
-                        await ref.read(orderProvider).createOrder(order);
-                        
-                        // Send notification to the seller that buyer has paid
-                        await ref.read(notificationRepositoryProvider).createNotification(
-                          userId: widget.product.ownerId,
-                          title: 'New Order Received!',
-                          body: 'Someone has paid for "${widget.product.title}". Please take item to the pickup station.',
-                          type: NotificationType.orderPaid,
-                          relatedId: order.orderId,
-                        );
-                        
-                        context.pushReplacement(Successpage(product: widget.product, order: order,));
                       },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.transparent,

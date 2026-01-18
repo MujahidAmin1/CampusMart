@@ -47,15 +47,19 @@ class ProfileRepository {
     });
   }
 
-  Stream<List<Product>> getProductsListedByMe(){
+  Stream<List<Product>> getProductsListedByMe() {
     final currentUser = firebaseAuth.currentUser;
 
-    final userDoc = firebaseFirestore
-        .collection('products')
-        .where('ownerId', isEqualTo: currentUser?.uid)
-        .snapshots().map((snap)=> snap.docs.map((doc) => Product.fromMap(doc.data())).toList());
+    // Return empty stream if no user is logged in
+    if (currentUser == null) {
+      return Stream.value([]);
+    }
 
-        return userDoc;
+    return firebaseFirestore
+        .collection('products')
+        .where('ownerId', isEqualTo: currentUser.uid)
+        .snapshots()
+        .map((snap) => snap.docs.map((doc) => Product.fromMap(doc.data())).toList());
   }
 
   Stream<List<Product>> itemsPaidFor(String uid) async* {

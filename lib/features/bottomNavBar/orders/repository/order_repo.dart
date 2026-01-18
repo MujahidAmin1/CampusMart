@@ -24,6 +24,12 @@ class OrderRepository {
           .collection("orders")
           .doc(order.orderId)
           .set(order.toMap());
+      
+      // Mark product as unavailable after successful order
+      await firebaseFirestore
+          .collection("products")
+          .doc(order.productId)
+          .update({'isAvailable': false});
     } on FirebaseException catch (e) {
       log(e.toString());
       throw (e.toString());

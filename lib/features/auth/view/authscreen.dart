@@ -161,8 +161,14 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
                                         TextStyle(color: Colors.grey.shade400),
                                   ),
                                   validator: (value) {
-                                    if (value == null || value.isEmpty) {
-                                      return 'Please enter a username';
+                                    if (value == null || value.trim().isEmpty) {
+                                      return 'Username is required';
+                                    }
+                                    if (value.trim().length < 3) {
+                                      return 'Username must be at least 3 characters';
+                                    }
+                                    if (value.trim().length > 20) {
+                                      return 'Username cannot exceed 20 characters';
                                     }
                                     return null;
                                   },
@@ -206,9 +212,9 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
                                     if (value == null || value.trim().isEmpty) {
                                       return 'Registration number is required';
                                     }
-                                    final input = value.trim();
+                                    final input = value.trim().toUpperCase();
                                     if (!bukRegNoRegex.hasMatch(input)) {
-                                      return 'Invalid registration number format';
+                                      return 'Format: CST/21/SWE/00655 (DEPT/YEAR/COURSE/NUMBER)';
                                     }
                                     return null;
                                   },
@@ -247,10 +253,12 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
                                       TextStyle(color: Colors.grey.shade400),
                                 ),
                                 validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return 'Please enter your email';
-                                  } else if (!value.contains('@')) {
-                                    return 'Enter a valid email';
+                                  if (value == null || value.trim().isEmpty) {
+                                    return 'Email address is required';
+                                  }
+                                  final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+                                  if (!emailRegex.hasMatch(value.trim())) {
+                                    return 'Please enter a valid email (e.g., name@example.com)';
                                   }
                                   return null;
                                 },
@@ -291,9 +299,13 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
                                 ),
                                 validator: (value) {
                                   if (value == null || value.isEmpty) {
-                                    return 'Please enter a password';
-                                  } else if (value.length < 6) {
-                                    return 'Password must be at least 6 characters';
+                                    return 'Password is required';
+                                  }
+                                  if (value.length < 6) {
+                                    return 'Password must be at least 6 characters long';
+                                  }
+                                  if (!RegExp(r'[A-Za-z]').hasMatch(value)) {
+                                    return 'Password must contain at least one letter';
                                   }
                                   return null;
                                 },

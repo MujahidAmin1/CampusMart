@@ -5,7 +5,7 @@ enum Category {
   electronics,
   fashion,
   furniture,
-  books,
+  academics,
   sports,
   gadgets,
   others,

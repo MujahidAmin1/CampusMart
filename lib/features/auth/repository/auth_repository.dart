@@ -22,13 +22,14 @@ class AuthRepository {
   });
 
   Future<UserCredential?> createUser(String username, String email, String regNo, String password) async {
-    final credentials = await firebaseAuth.createUserWithEmailAndPassword(
-      email: email,
-      password: password,
-    );
-    final user = credentials.user!;
-    await user.updateDisplayName(username);
     try {
+      final credentials = await firebaseAuth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      final user = credentials.user!;
+      await user.updateDisplayName(username);
+      
       final userDoc = firebaseFirestore.collection('users').doc(user.uid);
       await userDoc.set(User(
         username: username,
@@ -37,8 +38,10 @@ class AuthRepository {
         regNo: regNo,
       ).toMap());
       return credentials;
+    } on FirebaseAuthException catch (e) {
+      throw Exception(_getAuthErrorMessage(e.code));
     } on Exception catch (e) {
-      throw Exception(e);
+      throw Exception(e.toString());
     }
   }
 
@@ -53,8 +56,35 @@ class AuthRepository {
 
       final userDoc = await firebaseFirestore.collection('users').doc(user.uid).get();
       return User.fromMap(userDoc.data()!);
+    } on FirebaseAuthException catch (e) {
+      throw Exception(_getAuthErrorMessage(e.code));
     } on Exception catch (e) {
-      throw Exception(e);
+      throw Exception(e.toString());
+    }
+  }
+
+  String _getAuthErrorMessage(String code) {
+    switch (code) {
+      case 'user-not-found':
+        return 'No account found with this email. Please sign up first.';
+      case 'wrong-password':
+        return 'Incorrect password. Please try again.';
+      case 'invalid-email':
+        return 'Please enter a valid email address.';
+      case 'user-disabled':
+        return 'This account has been disabled. Contact support.';
+      case 'too-many-requests':
+        return 'Too many failed attempts. Please try again later.';
+      case 'invalid-credential':
+        return 'Invalid email or password. Please check your credentials.';
+      case 'email-already-in-use':
+        return 'An account already exists with this email.';
+      case 'weak-password':
+        return 'Password is too weak. Use at least 6 characters.';
+      case 'operation-not-allowed':
+        return 'This sign-in method is not enabled.';
+      default:
+        return 'Authentication failed. Please try again.';
     }
   }
 
