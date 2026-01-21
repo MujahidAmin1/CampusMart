@@ -19,6 +19,7 @@ class Product {
   final double price;
   final String category;
   final bool isAvailable;
+  final bool isApproved;
   final DateTime datePosted;
   final List<String> imageUrls;
 
@@ -30,6 +31,7 @@ class Product {
     required this.price,
     required this.category,
     required this.isAvailable,
+    this.isApproved = false,
     required this.datePosted,
     required this.imageUrls,
   });
@@ -42,6 +44,7 @@ class Product {
     double? price,
     String? category,
     bool? isAvailable,
+    bool? isApproved,
     DateTime? datePosted,
     List<String>? imageUrls,
   }) {
@@ -53,6 +56,7 @@ class Product {
       price: price ?? this.price,
       category: category ?? this.category,
       isAvailable: isAvailable ?? this.isAvailable,
+      isApproved: isApproved ?? this.isApproved,
       datePosted: datePosted ?? this.datePosted,
       imageUrls: imageUrls ?? this.imageUrls,
     );
@@ -67,6 +71,7 @@ class Product {
       price: map['price'].toDouble(),
       category: map['category'],
       isAvailable: map['isAvailable'],
+      isApproved: map['isApproved'] ?? false,
       datePosted: (map['datePosted'] as Timestamp).toDate(),
       imageUrls: List<String>.from(map['imageUrls']),
     );
@@ -81,6 +86,7 @@ class Product {
       'price': price,
       'category': category,
       'isAvailable': isAvailable,
+      'isApproved': isApproved,
       'datePosted': datePosted,
       'imageUrls': imageUrls,
     };

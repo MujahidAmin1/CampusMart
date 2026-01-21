@@ -128,6 +128,49 @@ class MyListedItemsScreen extends ConsumerWidget {
                           ),
                         ),
                         
+                        // Approval status badge
+                        Positioned(
+                          top: 8,
+                          left: 8,
+                          child: Container(
+                            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                            decoration: BoxDecoration(
+                              color: product.isApproved 
+                                  ? Colors.green.shade500 
+                                  : Colors.orange.shade500,
+                              borderRadius: BorderRadius.circular(6),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.2),
+                                  blurRadius: 4,
+                                  offset: Offset(0, 2),
+                                ),
+                              ],
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  product.isApproved 
+                                      ? Icons.check_circle 
+                                      : Icons.pending,
+                                  size: 12,
+                                  color: Colors.white,
+                                ),
+                                SizedBox(width: 4),
+                                Text(
+                                  product.isApproved ? 'Approved' : 'Pending',
+                                  style: TextStyle(
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        
                         // Action buttons overlay
                         Positioned(
                           top: 8,

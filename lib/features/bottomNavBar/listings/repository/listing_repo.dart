@@ -34,7 +34,7 @@ class ProductListRepository {
       if (firebaseAuth.currentUser == null) {
         return Stream.value([]);
       }
-      final productDoc = firebaseFirestore.collection("products").where('isAvailable', isEqualTo: true);
+      final productDoc = firebaseFirestore.collection("products").where('isAvailable', isEqualTo: true).where('isApproved', isEqualTo: true);
       return productDoc.snapshots().map((snaps) =>
           snaps.docs.map((doc) => Product.fromMap(doc.data())).toList());
     } on Exception catch (e) {

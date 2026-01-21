@@ -451,6 +451,7 @@ class _CreateProdScreenState extends ConsumerState<CreateProdScreen> {
                         price: double.parse(priceController.text),
                         category: Category.values[selectedCategory.index].name,
                         isAvailable: true,
+                        isApproved: false,
                         datePosted: DateTime.now(),
                         imageUrls: selectedImages.map((e) => e!.path).toList(),
                       );
