@@ -1,6 +1,6 @@
 import 'package:campusmart/features/auth/repository/auth_repository.dart';
-import 'package:campusmart/features/bottomNavBar/notification/controller/notification_contr.dart';
-import 'package:campusmart/features/bottomNavBar/orders/controller/order_contr.dart';
+import 'package:campusmart/features/notification/controller/notification_contr.dart';
+import 'package:campusmart/features/orders/controller/order_contr.dart';
 import 'package:riverpod/riverpod.dart';
 
 final authControllerProvider = StateNotifierProvider<AuthController, AsyncValue<void>>((ref) {
@@ -44,8 +44,6 @@ class AuthController extends StateNotifier<AsyncValue<void>> {
     state = const AsyncValue.loading();
     try {
       await authRepoService.logout();
-      
-      // Invalidate user-specific providers to clear cached data
       ref.invalidate(notificationsProvider);
       ref.invalidate(unreadNotificationCountProvider);
       ref.invalidate(ordersProvider);

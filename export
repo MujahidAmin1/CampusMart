@@ -1,0 +1,86 @@
+const admin = require("firebase-admin");
+const fs = require("fs");
+const path = require("path");
+
+admin.initializeApp({
+  credential: admin.credential.cert(
+    require("./serviceAccountKey.json")
+  ),
+});
+
+const db = admin.firestore();
+const OUT = path.join(__dirname, "firestore_export");
+
+// create base output folder
+fs.mkdirSync(OUT, { recursive: true });
+
+// ---------- helpers ----------
+function writeJSON(filePath, data) {
+  fs.mkdirSync(path.dirname(filePath), { recursive: true });
+  fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
+}
+
+// ---------- top-level ----------
+async function exportCollection(name) {
+  console.log(`📦 Exporting ${name}`);
+  const snap = await db.collection(name).get();
+
+  const data = snap.docs.map(d => ({
+    id: d.id,
+    ...d.data(),
+  }));
+
+  writeJSON(path.join(OUT, `${name}.json`), data);
+  console.log(`✔ ${name}: ${data.length} docs`);
+}
+
+// ---------- subcollections ----------
+async function exportUserNotifications() {
+  console.log("🔔 Exporting users/{userId}/notifications");
+
+  const usersSnap = await db.collection("users").get();
+
+  for (const userDoc of usersSnap.docs) {
+    const notifSnap = await userDoc.ref
+      .collection("notifications")
+      .get();
+
+    if (notifSnap.empty) continue;
+
+    const data = notifSnap.docs.map(d => ({
+      id: d.id,
+      ...d.data(),
+    }));
+
+    writeJSON(
+      path.join(
+        OUT,
+        "users",
+        userDoc.id,
+        "notifications.json"
+      ),
+      data
+    );
+
+    console.log(
+      `  ↳ ${userDoc.id}: ${data.length} notifications`
+    );
+  }
+}
+
+// ---------- run ----------
+async function run() {
+  await exportCollection("orders");
+  await exportCollection("products");
+  await exportCollection("users");
+
+  await exportUserNotifications();
+
+  console.log("🎉 Firestore export completed");
+  process.exit(0);
+}
+
+run().catch(err => {
+  console.error("❌ Export failed:", err);
+  process.exit(1);
+});

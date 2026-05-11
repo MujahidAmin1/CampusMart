@@ -1,6 +1,6 @@
 import 'package:campusmart/core/utils/ktextstyle.dart';
-import 'package:campusmart/features/bottomNavBar/listings/view/detailed_screen.dart';
-import 'package:campusmart/features/bottomNavBar/listings/widget/product_display.dart';
+import 'package:campusmart/features/listings/view/detailed_screen.dart';
+import 'package:campusmart/features/listings/widget/product_display.dart';
 import 'package:campusmart/features/search/search_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

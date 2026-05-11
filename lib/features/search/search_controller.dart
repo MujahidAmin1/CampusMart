@@ -1,4 +1,4 @@
-import 'package:campusmart/features/bottomNavBar/listings/controller/listing_contr.dart';
+import 'package:campusmart/features/listings/controller/listing_contr.dart';
 import 'package:campusmart/models/product.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

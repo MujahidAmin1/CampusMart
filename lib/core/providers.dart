@@ -19,6 +19,7 @@ final cloudinaryServiceProvider = Provider<CloudinaryService>((ref) {
     apiSecret: 'zPUK12h_L9DBYOa0JCoF-eEhNcg',
   );
 });
+
 final firestoreProvider = Provider((ref) {
   return FirebaseFirestore.instance;
 });

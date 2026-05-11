@@ -51,7 +51,7 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
     });
     return Scaffold(
       body: GestureDetector(
-        onTap: ()=>FocusScope.of(context).unfocus(),
+        onTap: ()=> FocusScope.of(context).unfocus(),
         child: Container(
           decoration: BoxDecoration(
             color: Colors.grey.shade50,
@@ -95,12 +95,12 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
                               style: kTextStyle(
                                   color: Color(0xff3A2770),
                                   size: 24,
-                                  isBold: true))),
+                                  isBold: true,))),
                       Center(
                           child: Text("Your Campus, Your Marketplace",
                               style: kTextStyle(
                                   color: Color(0xff3A2770).withOpacity(0.6),
-                                  size: 16))),
+                                  size: 16),),),
                       const SizedBox(height: 30),
                       Center(
                           child: Text(
